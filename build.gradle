@@ -1,6 +1,9 @@
+group = 'org.apereo.portlet'
+version = '1.0.0-SNAPSHOT'
 description = 'Apereo Soffit'
 
 apply plugin: 'java'
+apply plugin: 'maven'
 
 defaultTasks 'clean', 'build'
 
@@ -12,7 +15,7 @@ repositories {
 dependencies {
 
     compile group: 'javax.servlet', name: 'servlet-api', version: "${servletVersion}"
-    compile group: 'org.apache.portals', name: 'portlet-api_2.1.0_spec', version: "1.0"
+    compile group: 'org.apache.portals', name: 'portlet-api_2.1.0_spec', version: '1.0'
     compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
     compile group: 'org.springframework', name: 'spring-webmvc-portlet', version: "${springVersion}"
