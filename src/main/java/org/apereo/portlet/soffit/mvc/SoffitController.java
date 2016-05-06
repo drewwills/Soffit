@@ -23,6 +23,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.portlet.PortletConfig;
 import javax.portlet.PortletRequest;
 import javax.servlet.ServletContext;
 
@@ -32,17 +34,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import org.springframework.web.portlet.context.PortletConfigAware;
 
 @Controller
-@RequestMapping
-public class SoffitController implements ServletContextAware {
+@RequestMapping(value={"VIEW","EDIT","HELP"})
+public class SoffitController implements ServletContextAware, PortletConfigAware {
 
     public static final String VIEWS_LOCATION_INIT_PARAM = "viewsLocation";
-    public static final String VIEWS_LOCATION_DEFAULT = "/WEB-INF/jsp/";
+    public static final String VIEWS_LOCATION_DEFAULT = "/WEB-INF/soffit/";
 
     private static final String VIEW_NOT_PROVIDED = SoffitController.class.getName() + ".VIEW_NOT_PROVIDED";
 
     private ServletContext servletContext;
+    private PortletConfig portletConfig;
+
+    private String viewsLocation;
     private final Map<String,Map<String,String>> availableViews = new HashMap<>();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -50,6 +56,23 @@ public class SoffitController implements ServletContextAware {
     @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    @Override
+    public void setPortletConfig(PortletConfig portletConfig) {
+        this.portletConfig = portletConfig;
+    }
+
+    @PostConstruct
+    public void init() {
+        viewsLocation = portletConfig.getInitParameter(VIEWS_LOCATION_INIT_PARAM);
+        if (viewsLocation == null) {
+            /*
+             * This circumstance means the viewsLocation portlet init
+             * parameter was not set;  use VIEWS_LOCATION_DEFAULT.
+             */
+            viewsLocation = VIEWS_LOCATION_DEFAULT;
+        }
     }
 
     @RenderMapping
@@ -113,7 +136,7 @@ public class SoffitController implements ServletContextAware {
             }
         }
 
-        logger.debug("Selected viewName='{}' for PortletMode='{}' and WindowState='{}'",
+        logger.info("Selected viewName='{}' for PortletMode='{}' and WindowState='{}'",
                                 rslt, req.getPortletMode(), req.getWindowState());
 
         return rslt;
@@ -122,15 +145,6 @@ public class SoffitController implements ServletContextAware {
 
     private String getCompletePathforParts(final PortletRequest req, final String... parts) {
  
-        String viewsLocation = req.getPortletSession().getPortletContext().getInitParameter(VIEWS_LOCATION_INIT_PARAM);
-        if (viewsLocation == null) {
-            /*
-             * This circumstance means the viewsLocation portlet init
-             * parameter was not set;  use VIEWS_LOCATION_DEFAULT.
-             */
-            viewsLocation = VIEWS_LOCATION_DEFAULT;
-        }
-
         StringBuilder path = new StringBuilder().append(viewsLocation);
 
         if (!viewsLocation.endsWith("/")) {
@@ -143,6 +157,8 @@ public class SoffitController implements ServletContextAware {
         }
 
         path.append("jsp");
+
+        logger.debug("Calculated path '{}' for parts={}", path, parts);
 
         return path.toString();
 

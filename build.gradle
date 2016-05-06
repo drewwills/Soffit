@@ -12,12 +12,24 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    provided
+}
+
+sourceSets {
+    main.compileClasspath += configurations.provided
+    test.compileClasspath += configurations.provided
+    test.runtimeClasspath += configurations.provided
+}
+
 dependencies {
 
-    compile group: 'javax.servlet', name: 'servlet-api', version: "${servletVersion}"
-    compile group: 'org.apache.portals', name: 'portlet-api_2.1.0_spec', version: '1.0'
+    compile group: 'javax.servlet', name: 'jstl', version: "${jstlVersion}"
     compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
     compile group: 'org.springframework', name: 'spring-webmvc-portlet', version: "${springVersion}"
+
+    provided group: 'javax.servlet', name: 'servlet-api', version: "${servletVersion}"
+    provided group: 'org.apache.portals', name: 'portlet-api_2.1.0_spec', version: '1.0'
 
 }
