@@ -8,11 +8,11 @@ You are a Java web application developer.  You need to develop content for [Aper
 
 You are not excited about doing Java Portlet development [in the traditional way](http://www.theserverside.com/tutorial/JSR-286-development-tutorial-An-introduction-to-portlet-programming) or even using [Spring Portlet MVC](http://docs.spring.io/autorepo/docs/spring/3.2.x/spring-framework-reference/html/portlet.html).  You correctly conclude that the Java Portlet APIs are _large_, _obtuse_, and _actively interfere_ with contemporary web development practices and frameworks that you want to be using.
 
-Apereo Soffit is an approach to producing content that runs in a JSR-286 portlet container.  It isn't another approach to Java Portlet Development _per se_;  it's a way to "mix portlet_ness_ into" the project you're already developing... the project you want to be working on.
+Apereo Soffit is an approach to producing content that runs in a JSR-286 portlet container.  It isn't another approach to Java Portlet Development _per se_;  it's a way to "mix portlet-ness into" the project you're already developing... the project you want to be working on.
 
 ## How Does It Work?
 
-Add Soffit to your Java Web Application.  Provide a `portlet.xml` file in which you define the portlets you want.  Use `.jsp` or `.html` files to create the markup you want to appear in your portlet(s).  That's it!  With every other aspect of your project, simply carry on with what you were doing.  Soffit takes care of the portlet_ness_ and gets out of your way so you can do development the way that you want to.
+Add Soffit to your Java Web Application.  Provide a `portlet.xml` file in which you define the portlets you want.  Use `.jsp` or `.html` files to create the markup you want to appear in your portlet(s).  That's it!  With every other aspect of your project, simply carry on with what you were doing.  Soffit takes care of the portlet-ness and gets out of your way so you can do development the way that you want to.
 
 ### Modern Web User Interfaces
 
@@ -20,7 +20,7 @@ Soffit assumes that you want to develop user interfaces using Javascript and mod
 
 ## Minimal Soffit Portlet
 
-Follow these three steps to add portlet_ness_ to your Java webapp.
+Follow these three steps to add portlet-ness to your Java webapp.
 
 ### Add Soffit as a dependency to your project
 
@@ -45,7 +45,7 @@ If you're using Spring in any way, you may already have most of these items.
 ```
     <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
              http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
              version="3.1">
 
