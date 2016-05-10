@@ -20,18 +20,21 @@
 package org.apereo.portlet.soffit.mvc;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.portlet.PortletConfig;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
@@ -92,6 +95,15 @@ public class SoffitController implements ServletContextAware, PortletConfigAware
             throw new IllegalStateException("Portlet not initialized;  the PortletConfig was not provided.");
         }
         return selectView(req);
+    }
+
+    @ModelAttribute("preferences")
+    public Map<String,List<String>> getPreferences(final PortletPreferences portletPreferences) {
+        final Map<String,List<String>> rslt = new HashMap<>();
+        for (Map.Entry<String,String[]> y : portletPreferences.getMap().entrySet()) {
+            rslt.put(y.getKey(), Arrays.asList(y.getValue()));
+        }
+        return rslt;
     }
 
     /*
