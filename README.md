@@ -40,7 +40,7 @@ Maven Example:
 
 ### Add Spring to your `web.xml`
 
-If you're using Spring in any way, you may already have most of these items.
+If you're already using Spring, you may have some of this configuration (or not need it).
 
 ```
     <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
@@ -51,11 +51,15 @@ If you're using Spring in any way, you may already have most of these items.
 
         <display-name>My Java Web Application</display-name>
 
+        <!--
+         | You don't need contextConfigLocation or the ContextLoaderListener if
+         | you already have a Spring ApplicationContext in your project -- for
+         | example, if you have a typical Spring Boot setup.
+         +-->
         <context-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/context/*.xml</param-value>
         </context-param>
-
         <listener>
             <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
         </listener>
