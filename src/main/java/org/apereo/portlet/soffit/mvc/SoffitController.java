@@ -27,6 +27,7 @@ import javax.annotation.PostConstruct;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletRequest;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class SoffitController implements ServletContextAware, PortletConfigAware
     private ServletContext servletContext;
     private PortletConfig portletConfig;
 
-    private String viewsLocation;
+    private String viewsLocation = null; // default;  indicates we're not running in a portlet container
     private final Map<String,Map<String,String>> availableViews = new HashMap<>();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -65,18 +66,31 @@ public class SoffitController implements ServletContextAware, PortletConfigAware
 
     @PostConstruct
     public void init() {
-        viewsLocation = portletConfig.getInitParameter(VIEWS_LOCATION_INIT_PARAM);
-        if (viewsLocation == null) {
+        if (portletConfig != null) {
             /*
-             * This circumstance means the viewsLocation portlet init
-             * parameter was not set;  use VIEWS_LOCATION_DEFAULT.
+             * We are running in a portlet container and will therefore provide
+             * portlet-based services.  (Anything special we should do if we
+             * aren't?)
              */
-            viewsLocation = VIEWS_LOCATION_DEFAULT;
+            viewsLocation = portletConfig.getInitParameter(VIEWS_LOCATION_INIT_PARAM);
+            if (viewsLocation == null) {
+                /*
+                 * This circumstance means the viewsLocation portlet init
+                 * parameter was not set;  use VIEWS_LOCATION_DEFAULT.
+                 */
+                viewsLocation = VIEWS_LOCATION_DEFAULT;
+            }
         }
     }
 
     @RenderMapping
     public String render(final PortletRequest req) {
+        if (viewsLocation == null) {
+            /*
+             * We're NOT running in a portlet container (as far as we know).
+             */
+            throw new IllegalStateException("Portlet not initialized;  the PortletConfig was not provided.");
+        }
         return selectView(req);
     }
 

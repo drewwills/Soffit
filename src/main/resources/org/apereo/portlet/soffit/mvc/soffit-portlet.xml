@@ -6,8 +6,8 @@
       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <context:component-scan base-package="org.apereo.portlet.soffit.mvc" />
     <context:annotation-config />
+    <context:component-scan base-package="org.apereo.portlet.soffit.mvc" />
 
     <!-- Default View Resolver -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
