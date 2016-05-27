@@ -24,7 +24,10 @@ sourceSets {
 
 dependencies {
 
+    compile ("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+    compile("commons-io:commons-io:${commonsIoVersion}")
     compile group: 'javax.servlet', name: 'jstl', version: "${jstlVersion}"
+    compile("org.apache.httpcomponents:httpclient:${httpclientVersion}")
     compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
     compile group: 'org.springframework', name: 'spring-webmvc-portlet', version: "${springVersion}"
