@@ -13,13 +13,17 @@ repositories {
 }
 
 configurations {
+    /*
+     * Defines a 'provided' scope similar to the one in Maven.  Dependencies
+     * defined using provided will not become transitive dependencies.
+     */
     provided
-}
 
-sourceSets {
-    main.compileClasspath += configurations.provided
-    test.compileClasspath += configurations.provided
-    test.runtimeClasspath += configurations.provided
+    /*
+     * Makes provided dependencies available on the compile classpath in a way
+     * that works both from the command line and in Buildship.
+     */
+    compile.extendsFrom provided
 }
 
 dependencies {
