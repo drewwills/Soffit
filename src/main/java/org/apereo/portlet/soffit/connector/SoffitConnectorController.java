@@ -20,7 +20,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apereo.portlet.soffit.model.SoffitRequest;
+import org.apereo.portlet.soffit.model.v1_0.SoffitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -78,6 +78,7 @@ public class SoffitConnectorController {
             logger.debug("HTTP response code for url '{}' was '{}'", serviceUrl, statusCode);
 
             if (statusCode != HttpStatus.SC_OK) {
+                logger.error("Failed to get content from remote service '{}';  HttpStatus={}", serviceUrl, statusCode);
                 res.getWriter().write("FAILED!  statusCode="+statusCode);  // TODO:  Better message
                 return;
             }
@@ -96,6 +97,8 @@ public class SoffitConnectorController {
      */
 
     private SoffitRequest buildSoffitRequest(final RenderRequest req, final RenderResponse res) {
+
+        // TODO:  Use a PortletPreference for versioning the SoffitRequest
 
         final SoffitRequest rslt = new SoffitRequest();
 

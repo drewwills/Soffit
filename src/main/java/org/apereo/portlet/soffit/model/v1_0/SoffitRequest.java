@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apereo.portlet.soffit.model;
+package org.apereo.portlet.soffit.model.v1_0;
 
 import java.util.Collections;
 import java.util.List;

@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apereo.portlet.soffit.model.SoffitRequest;
+import org.apereo.portlet.soffit.model.v1_0.SoffitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,6 +84,7 @@ public class SoffitRendererController {
 
     }
 
+    // TODO:  Not convinced we need this item at all
     @ModelAttribute("properties")
     public Map<String,String> getProperties() {
         return soffitProperties;
