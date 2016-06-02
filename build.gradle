@@ -1,4 +1,4 @@
-group = 'org.apereo.portlet'
+group = 'org.apereo.portal'
 version = '1.0.0-SNAPSHOT'
 description = 'Apereo Soffit'
 
