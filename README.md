@@ -59,6 +59,15 @@ That's it -- try it out!
 
 You're ready to build and start your soffit.  If you're running locally, you can either use a different port than the portal (e.g. 8090) or deploy your `.war` file to Tomcat beside the portal.
 
+## A note on `tomcat-embed-jasper` for Spring Boot applications
+
+Spring Boot is a great way to build soffits.  The embedded Tomcat environment provided with a Spring Boot application requires the `tomcat-embed-jasper` dependency to leverage JSPs.
+
+Gradle Example:
+```
+    providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
+```
+
 ## Publishing your Soffit
 
 Follow these steps to view your soffit in uPortal.
