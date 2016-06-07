@@ -1,23 +1,17 @@
 package org.apereo.portlet.soffit.renderer;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apereo.portlet.soffit.model.v1_0.SoffitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,34 +33,7 @@ public class SoffitRendererController {
 
     final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("classpath:/soffit.properties")
-    private Resource soffitPropertiesResource;
-
-    private Map<String,String> soffitProperties = Collections.emptyMap();  // default
-
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @PostConstruct
-    public void init() {
-        Properties properties = new Properties();
-        Map<String,String> map = new HashMap<>();
-        try (final InputStream stream = soffitPropertiesResource.getInputStream()) {
-            if (stream != null) {
-                // A soffit.properties file was included, so we will use it
-                logger.debug("File soffit.properties was provided");
-                properties.load(stream);
-                for (final String name : properties.stringPropertyNames()) {
-                    map.put(name, properties.getProperty(name));
-                }
-            }
-        } catch (IOException e) {
-            logger.error("Classpath file soffit.properties was provided, but failed to load", e);
-        }
-        if (!map.isEmpty()) {
-            soffitProperties = Collections.unmodifiableMap(map);
-        }
-        logger.debug("Initialized soffitProperties:  {}", soffitProperties);
-    }
 
     @RequestMapping(value="/{module}", method=RequestMethod.POST)
     public ModelAndView render(final HttpServletRequest req, final @RequestBody String soffitJson,
@@ -82,12 +49,6 @@ public class SoffitRendererController {
             throw new IllegalArgumentException("Request body was not JSON or was not a valid SoffitRequest", e);
         }
 
-    }
-
-    // TODO:  Not convinced we need this item at all
-    @ModelAttribute("properties")
-    public Map<String,String> getProperties() {
-        return soffitProperties;
     }
 
     /*
