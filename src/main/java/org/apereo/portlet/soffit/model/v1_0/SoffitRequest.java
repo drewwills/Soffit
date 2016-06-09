@@ -19,6 +19,7 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class SoffitRequest {
     private Map<String,List<String>> preferences;
     private String namespace;
     private final Portal portal = new Portal();
+    private Principal user;
 
     public Portal getPortal() {
         return portal;
@@ -67,10 +69,18 @@ public class SoffitRequest {
         this.namespace = namespace;
     }
 
+    public Principal getUser() {
+        return user;
+    }
+
+    public void setUser(Principal user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "SoffitRequest [mode=" + mode + ", windowState=" + windowState + ", preferences=" + preferences
-                + ", namespace=" + namespace + ", portal=" + portal + "]";
+                + ", namespace=" + namespace + ", portal=" + portal + ", username=" + user.getName() + "]";
     }
 
 }
