@@ -30,7 +30,7 @@ public class SoffitRequest {
     private Map<String,List<String>> preferences;
     private String namespace;
     private final Portal portal = new Portal();
-    private UserDetails userDetals = new UserDetails();
+    private UserDetails userDetails = new UserDetails();
 
     public Portal getPortal() {
         return portal;
@@ -68,18 +68,18 @@ public class SoffitRequest {
         this.namespace = namespace;
     }
 
-    public void setUserDetals(UserDetails userDetals) {
-        this.userDetals = userDetals;
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
     }
 
-    public UserDetails getUserDetals() {
-        return userDetals;
+    public UserDetails getUserDetails() {
+        return userDetails;
     }
 
     @Override
     public String toString() {
         return "SoffitRequest [mode=" + mode + ", windowState=" + windowState + ", preferences=" + preferences
-                + ", namespace=" + namespace + ", portal=" + portal + ", userdDetails=" + userDetals.getUsername() + "]";
+                + ", namespace=" + namespace + ", portal=" + portal + ", userDetails=" + userDetails.toString() + "]";
     }
 
 }

@@ -4,18 +4,18 @@ package org.apereo.portlet.soffit.model.v1_0;
  * Created by andrew on 6/10/16.
  */
 public class UserDetails {
-    private String username;
+    private String userName;
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override
     public String toString() {
-        return "UserDetails [username = " + username + "]";
+        return "UserDetails [userName = " + userName + "]";
     }
 }

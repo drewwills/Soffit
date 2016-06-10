@@ -119,7 +119,7 @@ public class SoffitConnectorController {
         rslt.setNamespace(res.getNamespace());
 
         // User
-        rslt.getUserDetals().setUsername(req.getUserPrincipal().getName());
+        rslt.getUserDetails().setUserName(req.getUserPrincipal().getName());
 
         // Portal metadata
         rslt.getPortal().setProvider("uPortal");  // TODO:  Implement!
