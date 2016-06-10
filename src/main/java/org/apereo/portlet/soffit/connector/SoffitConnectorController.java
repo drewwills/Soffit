@@ -87,7 +87,7 @@ public class SoffitConnectorController {
             IOUtils.copy(entity.getContent(), res.getPortletOutputStream());
 
         } catch (IOException e) {
-            logger.error("Failed to invoke serviceUrl '{}'", serviceUrl);
+            logger.error("Failed to invoke serviceUrl '{}' with reason {}", serviceUrl, e.getMessage());
         }
 
     }
@@ -119,7 +119,7 @@ public class SoffitConnectorController {
         rslt.setNamespace(res.getNamespace());
 
         // User
-        rslt.setUser(req.getUserPrincipal());
+        rslt.setUserName(req.getUserPrincipal().getName());
 
         // Portal metadata
         rslt.getPortal().setProvider("uPortal");  // TODO:  Implement!
