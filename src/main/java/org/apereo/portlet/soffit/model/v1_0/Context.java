@@ -27,10 +27,22 @@ import java.util.Set;
 
 public class Context {
 
+    private String portalInfo;
     private String serverInfo;
 
     private Map<String,String> initParameters = new HashMap<>();
     private Set<String> containerRuntimeOptions = new HashSet<>();
+    private Set<String> supportedModes = new HashSet<>();
+    private Set<String> supportedWindowStates = new HashSet<>();
+
+    public String getPortalInfo() {
+        return portalInfo;
+    }
+
+    public Context setPortalInfo(String portalInfo) {
+        this.portalInfo = portalInfo;
+        return this;
+    }
 
     public String getServerInfo() {
         return serverInfo;
@@ -66,13 +78,42 @@ public class Context {
         return containerRuntimeOptions.remove(containerRuntimeOption);
     }
 
+    public Set<String> getSupportedModes() {
+        // Defensive copy
+        return Collections.unmodifiableSet(supportedModes);
+    }
+
+    public void addSupportedMode(String mode) {
+        supportedModes.add(mode);
+    }
+
+    public boolean removeSupportedMode(String mode) {
+        return supportedModes.remove(mode);
+    }
+
+    public Set<String> getSupportedWindowStates() {
+        // Defensive copy
+        return Collections.unmodifiableSet(supportedWindowStates);
+    }
+
+    public void addSupportedWindowState(String windowState) {
+        supportedWindowStates.add(windowState);
+    }
+
+    public boolean removeSupportedWindowState(String windowState) {
+        return supportedWindowStates.remove(windowState);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((containerRuntimeOptions == null) ? 0 : containerRuntimeOptions.hashCode());
         result = prime * result + ((initParameters == null) ? 0 : initParameters.hashCode());
+        result = prime * result + ((portalInfo == null) ? 0 : portalInfo.hashCode());
         result = prime * result + ((serverInfo == null) ? 0 : serverInfo.hashCode());
+        result = prime * result + ((supportedModes == null) ? 0 : supportedModes.hashCode());
+        result = prime * result + ((supportedWindowStates == null) ? 0 : supportedWindowStates.hashCode());
         return result;
     }
 
@@ -95,18 +136,34 @@ public class Context {
                 return false;
         } else if (!initParameters.equals(other.initParameters))
             return false;
+        if (portalInfo == null) {
+            if (other.portalInfo != null)
+                return false;
+        } else if (!portalInfo.equals(other.portalInfo))
+            return false;
         if (serverInfo == null) {
             if (other.serverInfo != null)
                 return false;
         } else if (!serverInfo.equals(other.serverInfo))
+            return false;
+        if (supportedModes == null) {
+            if (other.supportedModes != null)
+                return false;
+        } else if (!supportedModes.equals(other.supportedModes))
+            return false;
+        if (supportedWindowStates == null) {
+            if (other.supportedWindowStates != null)
+                return false;
+        } else if (!supportedWindowStates.equals(other.supportedWindowStates))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Context [serverInfo=" + serverInfo + ", initParameters=" + initParameters + ", containerRuntimeOptions="
-                + containerRuntimeOptions + "]";
+        return "Context [portalInfo=" + portalInfo + ", serverInfo=" + serverInfo + ", initParameters=" + initParameters
+                + ", containerRuntimeOptions=" + containerRuntimeOptions + ", supportedModes=" + supportedModes
+                + ", supportedWindowStates=" + supportedWindowStates + "]";
     }
 
 }

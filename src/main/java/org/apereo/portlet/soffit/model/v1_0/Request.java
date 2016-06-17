@@ -22,11 +22,8 @@ package org.apereo.portlet.soffit.model.v1_0;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 public class Request {
 
@@ -34,7 +31,6 @@ public class Request {
     private String windowId;
     private String namespace;
     private String authType;
-    private String portalInfo;
     private String mode;
     private String windowState;
     private String scheme;
@@ -44,10 +40,7 @@ public class Request {
 
     private Map<String,List<String>> preferences = new HashMap<>();
     private Map<String,List<String>> parameters = new HashMap<>();
-    private Map<String,List<String>> properties = new HashMap<>();
-    private Set<String> supportedModes = new HashSet<>();
-    private Set<String> supportedWindowStates = new HashSet<>();
-    private List<Locale> supportedLocales = new ArrayList<>();
+    private Map<String,String> properties = new HashMap<>();
     private List<String> supportedContentTypes = new ArrayList<>();
 
     public String getEtag() {
@@ -81,26 +74,6 @@ public class Request {
         parameters.put(key, values);
     }
 
-    public List<Locale> getSupportedLocales() {
-        // Defensive copy
-        return Collections.unmodifiableList(supportedLocales);
-    }
-
-    public void addSupportedLocale(Locale locale) {
-        supportedLocales.add(locale);
-    }
-
-    public boolean removeSupportedLocale(Locale locale) {
-        return supportedLocales.remove(locale);
-    }
-
-    public Locale getPreferredLocale() {
-        // The preferred Locale is the first in the list
-        return supportedLocales.isEmpty()
-                ? null
-                : supportedLocales.get(0);
-    }
-
     public String getWindowId() {
         return windowId;
     }
@@ -116,15 +89,6 @@ public class Request {
 
     public Request setNamespace(String namespace) {
         this.namespace = namespace;
-        return this;
-    }
-
-    public String getPortalInfo() {
-        return portalInfo;
-    }
-
-    public Request setPortalInfo(String portalInfo) {
-        this.portalInfo = portalInfo;
         return this;
     }
 
@@ -195,43 +159,17 @@ public class Request {
         preferences.put(key, values);
     }
 
-    public Map<String, List<String>> getProperties() {
+    public Map<String,String> getProperties() {
         // Defensive copy
         return Collections.unmodifiableMap(properties);
     }
 
-    public List<String> removeProperty(String key) {
+    public String removeProperty(String key) {
         return properties.remove(key);
     }
 
-    public void setProperty(String key, List<String> values) {
-        properties.put(key, values);
-    }
-
-    public Set<String> getSupportedModes() {
-        // Defensive copy
-        return Collections.unmodifiableSet(supportedModes);
-    }
-
-    public void addSupportedMode(String mode) {
-        supportedModes.add(mode);
-    }
-
-    public boolean removeSupportedMode(String mode) {
-        return supportedModes.remove(mode);
-    }
-
-    public Set<String> getSupportedWindowStates() {
-        // Defensive copy
-        return Collections.unmodifiableSet(supportedWindowStates);
-    }
-
-    public void addSupportedWindowState(String windowState) {
-        supportedWindowStates.add(windowState);
-    }
-
-    public boolean removeSupportedWindowState(String windowState) {
-        return supportedWindowStates.remove(windowState);
+    public void setProperty(String key, String value) {
+        properties.put(key, value);
     }
 
     public List<String> getSupportedContentTypes() {
@@ -245,6 +183,112 @@ public class Request {
 
     public boolean removeSupportedContentType(String contentType) {
         return supportedContentTypes.remove(contentType);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((Etag == null) ? 0 : Etag.hashCode());
+        result = prime * result + ((authType == null) ? 0 : authType.hashCode());
+        result = prime * result + ((mode == null) ? 0 : mode.hashCode());
+        result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+        result = prime * result + ((preferences == null) ? 0 : preferences.hashCode());
+        result = prime * result + ((properties == null) ? 0 : properties.hashCode());
+        result = prime * result + ((scheme == null) ? 0 : scheme.hashCode());
+        result = prime * result + (secure ? 1231 : 1237);
+        result = prime * result + ((serverName == null) ? 0 : serverName.hashCode());
+        result = prime * result + serverPort;
+        result = prime * result + ((supportedContentTypes == null) ? 0 : supportedContentTypes.hashCode());
+        result = prime * result + ((windowId == null) ? 0 : windowId.hashCode());
+        result = prime * result + ((windowState == null) ? 0 : windowState.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Request other = (Request) obj;
+        if (Etag == null) {
+            if (other.Etag != null)
+                return false;
+        } else if (!Etag.equals(other.Etag))
+            return false;
+        if (authType == null) {
+            if (other.authType != null)
+                return false;
+        } else if (!authType.equals(other.authType))
+            return false;
+        if (mode == null) {
+            if (other.mode != null)
+                return false;
+        } else if (!mode.equals(other.mode))
+            return false;
+        if (namespace == null) {
+            if (other.namespace != null)
+                return false;
+        } else if (!namespace.equals(other.namespace))
+            return false;
+        if (parameters == null) {
+            if (other.parameters != null)
+                return false;
+        } else if (!parameters.equals(other.parameters))
+            return false;
+        if (preferences == null) {
+            if (other.preferences != null)
+                return false;
+        } else if (!preferences.equals(other.preferences))
+            return false;
+        if (properties == null) {
+            if (other.properties != null)
+                return false;
+        } else if (!properties.equals(other.properties))
+            return false;
+        if (scheme == null) {
+            if (other.scheme != null)
+                return false;
+        } else if (!scheme.equals(other.scheme))
+            return false;
+        if (secure != other.secure)
+            return false;
+        if (serverName == null) {
+            if (other.serverName != null)
+                return false;
+        } else if (!serverName.equals(other.serverName))
+            return false;
+        if (serverPort != other.serverPort)
+            return false;
+        if (supportedContentTypes == null) {
+            if (other.supportedContentTypes != null)
+                return false;
+        } else if (!supportedContentTypes.equals(other.supportedContentTypes))
+            return false;
+        if (windowId == null) {
+            if (other.windowId != null)
+                return false;
+        } else if (!windowId.equals(other.windowId))
+            return false;
+        if (windowState == null) {
+            if (other.windowState != null)
+                return false;
+        } else if (!windowState.equals(other.windowState))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Request [Etag=" + Etag + ", windowId=" + windowId + ", namespace=" + namespace + ", authType="
+                + authType + ", mode=" + mode + ", windowState=" + windowState + ", scheme=" + scheme + ", serverName="
+                + serverName + ", serverPort=" + serverPort + ", secure=" + secure + ", preferences=" + preferences
+                + ", parameters=" + parameters + ", properties=" + properties + ", supportedContentTypes="
+                + supportedContentTypes + "]";
     }
 
 }

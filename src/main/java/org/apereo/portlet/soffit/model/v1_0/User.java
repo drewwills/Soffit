@@ -34,6 +34,10 @@ public class User {
     private Map<String,List<String>> attributes = new HashMap<>();
     private Set<Role> roles = new HashSet<>();
 
+    /**
+     * The login of the user making this request, if the user has been
+     * authenticated, or null if the user has not been authenticated.
+     */
     public String getUsername() {
         return username;
     }
