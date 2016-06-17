@@ -41,40 +41,45 @@ public class Definition {
         return title;
     }
 
-    public void setTitle(String title) {
+    public Definition setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Definition setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getFname() {
         return fname;
     }
 
-    public void setFname(String fname) {
+    public Definition setFname(String fname) {
         this.fname = fname;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Definition setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public int getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(int timeout) {
+    public Definition setTimeout(int timeout) {
         this.timeout = timeout;
+        return this;
     }
 
     public Set<String> getCategories() {

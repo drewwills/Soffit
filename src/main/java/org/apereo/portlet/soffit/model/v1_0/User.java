@@ -38,16 +38,18 @@ public class User {
         return username;
     }
 
-    public void setUsername(String username) {
+    public User setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     public Session getSession() {
         return session;
     }
 
-    public void setSession(Session session) {
+    public User setSession(Session session) {
         this.session = session;
+        return this;
     }
 
     public Map<String, List<String>> getAttributes() {

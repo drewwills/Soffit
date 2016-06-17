@@ -36,8 +36,9 @@ public class Context {
         return serverInfo;
     }
 
-    public void setServerInfo(String serverInfo) {
+    public Context setServerInfo(String serverInfo) {
         this.serverInfo = serverInfo;
+        return this;
     }
 
     public Map<String, String> getInitParameters() {

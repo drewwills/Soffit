@@ -54,16 +54,18 @@ public class Request {
         return Etag;
     }
 
-    public void setEtag(String etag) {
+    public Request setEtag(String etag) {
         Etag = etag;
+        return this;
     }
 
     public String getAuthType() {
         return authType;
     }
 
-    public void setAuthType(String authType) {
+    public Request setAuthType(String authType) {
         this.authType = authType;
+        return this;
     }
 
     public Map<String, List<String>> getParameters() {
@@ -103,72 +105,81 @@ public class Request {
         return windowId;
     }
 
-    public void setWindowId(String windowId) {
+    public Request setWindowId(String windowId) {
         this.windowId = windowId;
+        return this;
     }
 
     public String getNamespace() {
         return namespace;
     }
 
-    public void setNamespace(String namespace) {
+    public Request setNamespace(String namespace) {
         this.namespace = namespace;
+        return this;
     }
 
     public String getPortalInfo() {
         return portalInfo;
     }
 
-    public void setPortalInfo(String portalInfo) {
+    public Request setPortalInfo(String portalInfo) {
         this.portalInfo = portalInfo;
+        return this;
     }
 
     public String getMode() {
         return mode;
     }
 
-    public void setMode(String mode) {
+    public Request setMode(String mode) {
         this.mode = mode;
+        return this;
     }
 
     public String getWindowState() {
         return windowState;
     }
 
-    public void setWindowState(String windowState) {
+    public Request setWindowState(String windowState) {
         this.windowState = windowState;
+        return this;
     }
 
     public String getScheme() {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
+    public Request setScheme(String scheme) {
         this.scheme = scheme;
+        return this;
     }
 
     public String getServerName() {
         return serverName;
     }
 
-    public void setServerName(String serverName) {
+    public Request setServerName(String serverName) {
         this.serverName = serverName;
+        return this;
     }
 
     public int getServerPort() {
         return serverPort;
     }
 
-    public void setServerPort(int serverPort) {
+    public Request setServerPort(int serverPort) {
         this.serverPort = serverPort;
+        return this;
     }
 
     public boolean isSecure() {
         return secure;
     }
 
-    public void setSecure(boolean secure) {
+    public Request setSecure(boolean secure) {
         this.secure = secure;
+        return this;
     }
 
     public Map<String, List<String>> getPreferences() {

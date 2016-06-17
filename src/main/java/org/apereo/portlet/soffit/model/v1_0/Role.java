@@ -28,16 +28,18 @@ public class Role {
         return id;
     }
 
-    public void setId(String id) {
+    public Role setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Role setName(String name) {
         this.name = name;
+        return this;
     }
 
     @Override

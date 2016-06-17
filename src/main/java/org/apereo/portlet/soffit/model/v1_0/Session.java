@@ -28,16 +28,18 @@ public class Session {
         return creationTime;
     }
 
-    public void setCreationTime(long creationTime) {
+    public Session setCreationTime(long creationTime) {
         this.creationTime = creationTime;
+        return this;
     }
 
     public int getMaxInactiveInterval() {
         return maxInactiveInterval;
     }
 
-    public void setMaxInactiveInterval(int maxInactiveInterval) {
+    public Session setMaxInactiveInterval(int maxInactiveInterval) {
         this.maxInactiveInterval = maxInactiveInterval;
+        return this;
     }
 
     @Override
