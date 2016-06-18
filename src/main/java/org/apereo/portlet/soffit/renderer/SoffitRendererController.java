@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apereo.portlet.soffit.model.v1_0.SoffitRequest;
+import org.apereo.portlet.soffit.model.v1_0.Payload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +42,7 @@ public class SoffitRendererController {
         logger.debug("Rendering for request URI '{}', soffitJson={}", req.getRequestURI(), soffitJson);
 
         try {
-            final SoffitRequest soffit = objectMapper.readValue(soffitJson, SoffitRequest.class);
+            final Payload soffit = objectMapper.readValue(soffitJson, Payload.class);
             final String viewName = selectView(req, module, soffit);
             return new ModelAndView(viewName.toString(), MODEL_NAME, soffit);
         } catch (IOException e) {
@@ -55,7 +55,7 @@ public class SoffitRendererController {
      * Implementation
      */
 
-    private String selectView(final HttpServletRequest req, final String module, final SoffitRequest soffit) {
+    private String selectView(final HttpServletRequest req, final String module, final Payload soffit) {
 
         final StringBuilder modulePathBuilder = new StringBuilder().append(viewsLocation);
         if (!viewsLocation.endsWith("/")) {
@@ -71,7 +71,7 @@ public class SoffitRendererController {
         final Set<String> moduleResources = req.getSession().getServletContext().getResourcePaths(modulePath);
 
         // Narrow the choices based on PortletMode
-        final String modeLowercase = soffit.getMode().toLowerCase();
+        final String modeLowercase = soffit.getRequest().getMode().toLowerCase();
         Map<String,String> viewsForMode = availableViews.get(modeLowercase);
         if (viewsForMode == null) {
             // First time for this PortletMode;  seed the Map
@@ -80,7 +80,7 @@ public class SoffitRendererController {
         }
 
         // Narrow the choices further based on WindowState
-        final String windowStateLowercase = soffit.getWindowState().toLowerCase();
+        final String windowStateLowercase = soffit.getRequest().getWindowState().toLowerCase();
         String rslt = viewsForMode.get(windowStateLowercase);
 
         if (rslt == null) {
@@ -112,12 +112,12 @@ public class SoffitRendererController {
                 rslt = pathBasedOnModeOnly;
             } else {
                 throw new IllegalStateException("Unable to select a view for PortletMode="
-                        + soffit.getMode() + " and WindowState=" + soffit.getWindowState());
+                        + soffit.getRequest().getMode() + " and WindowState=" + soffit.getRequest().getWindowState());
             }
         }
 
         logger.info("Selected viewName='{}' for PortletMode='{}' and WindowState='{}'",
-                                rslt, soffit.getMode(), soffit.getWindowState());
+                                rslt, soffit.getRequest().getMode(), soffit.getRequest().getWindowState());
 
         return rslt;
 
