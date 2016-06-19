@@ -40,6 +40,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apereo.portlet.soffit.renderer.SoffitRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -110,9 +111,13 @@ public class SoffitConnectorController implements ApplicationContextAware {
         final HttpPost postMethod = new HttpPost(serviceUrl);
         try {
 
-            final String json = objectMapper.writeValueAsString(buildPayload(req, res));
+            // Provide a payload
+            final Object payload = buildPayload(req, res);
+            postMethod.setHeader(SoffitRendererController.PAYLOAD_CLASS_HEADER, payload.getClass().getName());
+            final String json = objectMapper.writeValueAsString(payload);
             postMethod.setEntity(new StringEntity(json));
 
+            // Send the request
             final HttpResponse httpResponse = httpClient.execute(postMethod);
             final int statusCode = httpResponse.getStatusLine().getStatusCode();
             logger.debug("HTTP response code for url '{}' was '{}'", serviceUrl, statusCode);

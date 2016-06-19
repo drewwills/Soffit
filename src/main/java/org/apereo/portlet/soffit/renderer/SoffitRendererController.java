@@ -24,6 +24,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/soffit")
 public class SoffitRendererController {
 
+    /**
+     * Name of HTTP header sent by the {@link SoffitConnectorController} to
+     * signal which POJO the JSON payload my be deserialized into.  This is a
+     * strategy for versioning and backwards compatibility.  The receiver of an
+     * older payload is free to transform it to a newer one, if a newer one is
+     * available (and that's the tactic we'll likely emply when it comes to it).
+     */
+    public static final String PAYLOAD_CLASS_HEADER = "X-Soffit-PayloadClass";
+
     private static final String MODEL_NAME = "soffit";
 
     @Value("${soffit.renderer.viewsLocation:/WEB-INF/soffit/}")
@@ -40,12 +49,28 @@ public class SoffitRendererController {
 
         logger.debug("Rendering for request URI '{}', soffitJson={}", req.getRequestURI(), soffitJson);
 
+        String payloadClassName = null;
         try {
-            final Payload soffit = objectMapper.readValue(soffitJson, Payload.class);
+
+            payloadClassName = req.getHeader(PAYLOAD_CLASS_HEADER);
+            if (payloadClassName == null) {
+                final String msg = "HTTP Header '" + PAYLOAD_CLASS_HEADER + "' not specified";
+                throw new IllegalArgumentException(msg);
+            }
+            final Class<?> payloadClass = Class.forName(payloadClassName);
+            logger.debug("Selected payloadClass '{}' for request URI '{}'", payloadClass, req.getRequestURI());
+
+            final Object soffit = objectMapper.readValue(soffitJson, payloadClass);
+
             final String viewName = selectView(req, module, soffit);
             return new ModelAndView(viewName.toString(), MODEL_NAME, soffit);
+
         } catch (IOException e) {
-            throw new IllegalArgumentException("Request body was not JSON or was not a valid SoffitRequest", e);
+            final String msg = "Request body was not JSON or was not a valid SoffitRequest";
+            throw new IllegalArgumentException(msg, e);
+        } catch (ClassNotFoundException e) {
+            final String msg = "Unable to locate the specified PayloadClass:  " + payloadClassName;
+            throw new IllegalArgumentException(msg, e);
         }
 
     }
@@ -54,7 +79,14 @@ public class SoffitRendererController {
      * Implementation
      */
 
-    private String selectView(final HttpServletRequest req, final String module, final Payload soffit) {
+    private String selectView(final HttpServletRequest req, final String module, final Object payload) {
+
+        /*
+         * NOTE: In the future, when we actually have more than one possible
+         * payloadClass, we will need to do better than simply hard-casting the
+         * payload to the type we need.
+         */
+        final Payload soffit = (Payload) payload;
 
         final StringBuilder modulePathBuilder = new StringBuilder().append(viewsLocation);
         if (!viewsLocation.endsWith("/")) {
