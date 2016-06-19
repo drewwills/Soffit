@@ -22,15 +22,15 @@ package org.apereo.portlet.soffit.connector;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-public abstract class AbstractSoffitRequestLoader implements ISoffitLoader {
+public abstract class AbstractSoffitLoader implements ISoffitLoader {
 
     private final int order;
 
-    public AbstractSoffitRequestLoader() {
+    public AbstractSoffitLoader() {
         this(ISoffitLoader.DEFAULT_LOADER_ORDER);
     }
 
-    public AbstractSoffitRequestLoader(int order) {
+    public AbstractSoffitLoader(int order) {
         this.order = order;
     }
 

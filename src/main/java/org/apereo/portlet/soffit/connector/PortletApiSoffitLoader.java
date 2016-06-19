@@ -47,7 +47,7 @@ import org.springframework.stereotype.Component;
  * @author drewwills
  */
 @Component
-public class PortletApiSoffitLoader extends AbstractSoffitRequestLoader {
+public class PortletApiSoffitLoader extends AbstractSoffitLoader {
 
     @Override
     public void load(org.apereo.portlet.soffit.model.v1_0.Payload soffit,
