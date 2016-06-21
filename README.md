@@ -25,34 +25,38 @@ Follow these three steps to create a minimal Soffit component.
 ### Add Soffit as a dependency to your project
 
 Gradle Example:
-```
-    compile group: 'org.apereo.portal', name: 'soffit', version: "1.0.0-SNAPSHOT"
+
+``` gradle
+compile group: 'org.apereo.portal', name: 'soffit', version: "1.0.0-SNAPSHOT"
 ```
 
 Maven Example:
-```
-    <dependency>
-        <groupId>org.apereo.portal</groupId>
-        <artifactId>soffit</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </dependency>
+
+``` xml
+<dependency>
+    <groupId>org.apereo.portal</groupId>
+    <artifactId>soffit</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
 ```
 
 ### Define the SoffitRendererController as a bean within your application
 
 Spring Boot Example:
-```
-    @Bean
-    public SoffitRendererController soffitRendererController() {
-        return new SoffitRendererController();
-    }
+
+``` java
+@Bean
+public SoffitRendererController soffitRendererController() {
+    return new SoffitRendererController();
+}
 ```
 
 ### Provide a `.jsp` file with your markup
 
 `/WEB-INF/soffit/my-soffit/view.jsp`:
-```
-    <h2>This is my amazing Soffit!</h2>
+
+``` jsp
+<h2>This is my amazing Soffit!</h2>
 ```
 
 That's it -- try it out!
@@ -64,8 +68,9 @@ You're ready to build and start your soffit.  If you're running locally, you can
 Spring Boot is a great way to build soffits.  The embedded Tomcat environment provided with a Spring Boot application requires the `tomcat-embed-jasper` dependency to leverage JSPs.
 
 Gradle Example:
-```
-    providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
+
+``` gradle
+providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 ```
 
 ## Publishing your Soffit
