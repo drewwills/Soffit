@@ -30,6 +30,7 @@ dependencies {
 
     compile ("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
     compile("commons-io:commons-io:${commonsIoVersion}")
+    compile("net.sf.ehcache:ehcache-core:${ehcacheVersion}")
     compile group: 'javax.servlet', name: 'jstl', version: "${jstlVersion}"
     compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
     compile("org.apache.httpcomponents:httpclient:${httpclientVersion}")

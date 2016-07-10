@@ -6,11 +6,15 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.portlet.soffit.model.v1_0.Payload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +37,36 @@ public class SoffitRendererController {
      */
     public static final String PAYLOAD_CLASS_HEADER = "X-Soffit-PayloadClass";
 
+    public static final String CACHE_CONTROL_HEADER = "Cache-Control";
+
+    /**
+     * The default value for the <code>Cache-Control</code> header is "no-cache,"
+     * which indicates the response should not be cached (until we later
+     * implement ETag-based caching).  This header value will be sent if the
+     * Soffit does not specify a value for scope or max-age  (they both must be
+     * specified).
+     */
+    public static final String CACHE_CONTROL_NOCACHE = "no-cache";
+
+    /**
+     * Prefix for all custom properties.
+     */
+    public static final String PROPERTY_PREFIX = "soffit.";
+
+    /**
+     * Used to create a property key specific to the soffit for cache scope.
+     */
+    public static final String CACHE_SCOPE_PROPERTY_FORMAT = PROPERTY_PREFIX + "%s.cache.scope";
+
+    /**
+     * Used to create a property key specific to the soffit for cache max-age.
+     */
+    public static final String CACHE_MAXAGE_PROPERTY_FORMAT = PROPERTY_PREFIX + "%s.cache.max-age";
+
     private static final String MODEL_NAME = "soffit";
+
+    @Autowired
+    private Environment environment;
 
     @Value("${soffit.renderer.viewsLocation:/WEB-INF/soffit/}")
     private String viewsLocation;
@@ -44,8 +77,8 @@ public class SoffitRendererController {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @RequestMapping(value="/{module}", method=RequestMethod.POST)
-    public ModelAndView render(final HttpServletRequest req, final @RequestBody String soffitJson,
-            final @PathVariable String module) {
+    public ModelAndView render(final HttpServletRequest req, final HttpServletResponse res,
+            final @PathVariable String module, final @RequestBody String soffitJson) {
 
         logger.debug("Rendering for request URI '{}', soffitJson={}", req.getRequestURI(), soffitJson);
 
@@ -60,9 +93,15 @@ public class SoffitRendererController {
             final Class<?> payloadClass = Class.forName(payloadClassName);
             logger.debug("Selected payloadClass '{}' for request URI '{}'", payloadClass, req.getRequestURI());
 
+            // Deserialize the payload
             final Object soffit = objectMapper.readValue(soffitJson, payloadClass);
 
+            // Select a view
             final String viewName = selectView(req, module, soffit);
+
+            // Set up cache headers appropriately
+            configureCacheHeaders(res, module);
+
             return new ModelAndView(viewName.toString(), MODEL_NAME, soffit);
 
         } catch (IOException e) {
@@ -78,6 +117,26 @@ public class SoffitRendererController {
     /*
      * Implementation
      */
+
+    private void configureCacheHeaders(final HttpServletResponse res, final String module) {
+
+        final String cacheScopeProperty = String.format(CACHE_SCOPE_PROPERTY_FORMAT, module);
+        final String cacheScopeValue = environment.getProperty(cacheScopeProperty);
+        logger.debug("Selecting cacheScopeValue='{}' for property '{}'", cacheScopeValue, cacheScopeProperty);
+
+        final String cacheMaxAgeProperty = String.format(CACHE_MAXAGE_PROPERTY_FORMAT, module);
+        final String cacheMaxAgeValue = environment.getProperty(cacheMaxAgeProperty);
+        logger.debug("Selecting cacheMaxAgeValue='{}' for property '{}'", cacheMaxAgeValue, cacheMaxAgeProperty);
+
+        // Both must be specified, else we just use the default...
+        final String cacheControl = (StringUtils.isNotEmpty(cacheScopeValue) && StringUtils.isNotEmpty(cacheMaxAgeValue))
+                ? cacheScopeValue + ", max-age=" + cacheMaxAgeValue
+                : CACHE_CONTROL_NOCACHE;
+        logger.debug("Setting cache-control='{}' for module '{}'", cacheControl, module);
+
+        res.setHeader(CACHE_CONTROL_HEADER, cacheControl);
+
+    }
 
     private String selectView(final HttpServletRequest req, final String module, final Object payload) {
 
@@ -150,7 +209,7 @@ public class SoffitRendererController {
             }
         }
 
-        rslt.append("jsp");  // TODO:  Fix!
+        rslt.append("jsp");  // TODO:  support more options
 
         logger.debug("Calculated path '{}' for parts={}", rslt, parts);
 
