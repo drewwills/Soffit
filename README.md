@@ -85,3 +85,17 @@ Follow these steps to view your soffit in uPortal.
 * Enter portlet metadata normally (_e.g._ name, tile, fname, groups, categories, lifecycle state, _etc._)
 * Under Portlet Preferences, override the value of `org.apereo.portlet.soffit.connector.SoffitConnectorController.serviceUrl` with the URL of your soffit, _e.g._ `http://localhost:8090/soffit/my-soffit` running independently (outside Tomcat) or `http://localhost:8080/my-porject/soffit/my-soffit` running inside Tomcat
 * Click _Save_
+
+## Configuration Options
+
+### Caching
+
+Caching in soffits is available _via_ the standard HTTP hedaer `Cache-Control`.
+
+#### Example
+
+```
+Cache-Control: public, max-age=300
+```
+
+Cache scope may be `public` (shared by all users) or `private` (cached per-user).  Specify `max-age` in seconds.
