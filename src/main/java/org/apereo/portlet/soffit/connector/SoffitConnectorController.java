@@ -48,6 +48,7 @@ import org.apereo.portlet.soffit.renderer.SoffitRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -103,7 +104,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
     @PostConstruct
     public void init() {
-        final Map<String, ISoffitLoader> map = applicationContext.getBeansOfType(ISoffitLoader.class);
+        final Map<String, ISoffitLoader> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ISoffitLoader.class);
         soffitLoaders.addAll(map.values());
         Collections.sort(soffitLoaders, new OrderComparator());
     }
