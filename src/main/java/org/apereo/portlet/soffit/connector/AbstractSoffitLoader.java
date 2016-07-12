@@ -47,12 +47,4 @@ public abstract class AbstractSoffitLoader implements ISoffitLoader {
         }
     }
 
-    /**
-     * Allows {@link ISoffitLoader} instances to be arranged in sequence.
-     */
-    @Override
-    public final int compareTo(ISoffitLoader that) {
-        return this.getOrder() - that.getOrder();
-    }
-
 }

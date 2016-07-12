@@ -52,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.OrderComparator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
@@ -104,7 +105,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
     public void init() {
         final Map<String, ISoffitLoader> map = applicationContext.getBeansOfType(ISoffitLoader.class);
         soffitLoaders.addAll(map.values());
-        Collections.sort(soffitLoaders);
+        Collections.sort(soffitLoaders, new OrderComparator());
     }
 
     @RenderMapping

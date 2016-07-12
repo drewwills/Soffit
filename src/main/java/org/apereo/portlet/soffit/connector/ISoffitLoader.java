@@ -22,6 +22,8 @@ package org.apereo.portlet.soffit.connector;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.springframework.core.Ordered;
+
 /**
  * Concrete implementations of this interface are responsible for loading the
  * {@link SoffitRequest} with information.  They run in the same JVM as the
@@ -35,16 +37,9 @@ import javax.portlet.RenderResponse;
  *
  * @author drewwills
  */
-public interface ISoffitLoader extends Comparable<ISoffitLoader> {
+public interface ISoffitLoader extends Ordered {
 
     public static final int DEFAULT_LOADER_ORDER = 0;
-
-    /**
-     * Determines the place this bean occupies in a sequence involving multiple
-     * {@link ISoffitLoader} objects.  Lower-order beans are invoked
-     * before higher-order beans.
-     */
-    int getOrder();
 
     /**
      * Load the specified soffit POJO with the information available from this
