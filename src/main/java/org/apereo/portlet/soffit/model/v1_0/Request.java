@@ -19,6 +19,8 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -284,11 +286,23 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request [Etag=" + Etag + ", windowId=" + windowId + ", namespace=" + namespace + ", authType="
-                + authType + ", mode=" + mode + ", windowState=" + windowState + ", scheme=" + scheme + ", serverName="
-                + serverName + ", serverPort=" + serverPort + ", secure=" + secure + ", preferences=" + preferences
-                + ", parameters=" + parameters + ", properties=" + properties + ", supportedContentTypes="
-                + supportedContentTypes + "]";
+
+        return new ToStringBuilder(this).
+            append("etag", Etag).
+            append("windowId", windowId).
+            append("namespace", namespace).
+            append("authType", authType).
+            append("mode", mode).
+            append("windowState", windowState).
+            append("scheme", scheme).
+            append("secure", secure).
+            append("serverName", serverName).
+            append("serverPort", serverPort).
+            append("preferences", preferences).
+            append("parameters", parameters).
+            append("properties", properties).
+            append("supportedContentTypes", supportedContentTypes).
+            toString();
     }
 
 }

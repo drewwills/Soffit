@@ -19,6 +19,8 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -168,8 +170,15 @@ public class Definition {
 
     @Override
     public String toString() {
-        return "Definition [title=" + title + ", name=" + name + ", fname=" + fname + ", description=" + description
-                + ", timeout=" + timeout + ", categories=" + categories + ", parameters=" + parameters + "]";
+        return new ToStringBuilder(this).
+            append("fname", fname).
+            append("title", title).
+            append("name", name).
+            append("description", description).
+            append("timeout", timeout).
+            append("categories", categories).
+            append("parameters", parameters).
+            toString();
     }
 
 }

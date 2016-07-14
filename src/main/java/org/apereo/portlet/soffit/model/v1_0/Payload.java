@@ -19,6 +19,8 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Payload {
 
     private Request request;
@@ -103,8 +105,12 @@ public class Payload {
 
     @Override
     public String toString() {
-        return "Payload [request=" + request + ", user=" + user + ", context=" + context + ", definition=" + definition
-                + "]";
+        return  new ToStringBuilder(this).
+            append("request", request).
+            append("user", user).
+            append("context", context).
+            append("definition", definition).
+            toString();
     }
 
 }

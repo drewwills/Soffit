@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Context {
 
     private String portalInfo;
@@ -161,9 +163,14 @@ public class Context {
 
     @Override
     public String toString() {
-        return "Context [portalInfo=" + portalInfo + ", serverInfo=" + serverInfo + ", initParameters=" + initParameters
-                + ", containerRuntimeOptions=" + containerRuntimeOptions + ", supportedModes=" + supportedModes
-                + ", supportedWindowStates=" + supportedWindowStates + "]";
+        return new ToStringBuilder(this).
+            append("portalInfo", portalInfo).
+            append("serverInfo", serverInfo).
+            append("initParameters", initParameters).
+            append("containerRuntimeOptions", containerRuntimeOptions).
+            append("supportedModes", supportedModes).
+            append("supportedWindowStates", supportedWindowStates).
+            toString();
     }
 
 }

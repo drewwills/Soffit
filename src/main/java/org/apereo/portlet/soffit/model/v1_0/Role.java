@@ -19,6 +19,8 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Role {
 
     private String id;
@@ -75,7 +77,10 @@ public class Role {
 
     @Override
     public String toString() {
-        return "Role [id=" + id + ", name=" + name + "]";
+        return new ToStringBuilder(this).
+            append("id", id).
+            append("name", name).
+            toString();
     }
 
 }

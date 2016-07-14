@@ -19,6 +19,8 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Session {
 
     private long creationTime;
@@ -69,7 +71,10 @@ public class Session {
 
     @Override
     public String toString() {
-        return "Session [creationTime=" + creationTime + ", maxInactiveInterval=" + maxInactiveInterval + "]";
+        return new ToStringBuilder(this).
+            append("creationTime", creationTime).
+            append("maxInactiveInterval", maxInactiveInterval).
+            toString();
     }
 
 }

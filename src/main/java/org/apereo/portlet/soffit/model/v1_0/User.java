@@ -19,6 +19,8 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,8 +129,12 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [username=" + username + ", session=" + session + ", attributes=" + attributes + ", roles=" + roles
-                + "]";
+        return new ToStringBuilder(this).
+            append("username", username).
+            append("session", session).
+            append("attributes", attributes).
+            append("roles", roles).
+            toString();
     }
 
 }
