@@ -90,11 +90,11 @@ Follow these steps to view your soffit in uPortal.
 
 ### Caching
 
-Caching in soffits is available _via_ the standard HTTP hedaer `Cache-Control`.
+Caching in soffits is available _via_ the standard HTTP header `Cache-Control`.
 
 #### Example
 
-```
+``` http
 Cache-Control: public, max-age=300
 ```
 
