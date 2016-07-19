@@ -82,6 +82,13 @@ public class PortletApiSoffitLoader extends AbstractSoffitLoader {
 
         // Preferences
         for (Map.Entry<String,String[]> y : renderRequest.getPreferences().getMap().entrySet()) {
+            /*
+             * We ignore (skip) preferences that exist for the benefit of the
+             * SoffitConnectorController.
+             */
+            if (y.getKey().startsWith(SoffitConnectorController.CONNECTOR_PREFERENCE_PREFIX)) {
+                continue;
+            }
             request.setPreference(
                     y.getKey(),
                     Collections.unmodifiableList(Arrays.asList(y.getValue()))
