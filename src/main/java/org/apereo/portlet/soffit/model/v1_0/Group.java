@@ -19,7 +19,12 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
-public class Role {
+/**
+ * Represents a class of users in the portal.
+ *
+ * @author drewwills
+ */
+public class Group {
 
     private String id;
     private String name;
@@ -28,7 +33,7 @@ public class Role {
         return id;
     }
 
-    public Role setId(String id) {
+    public Group setId(String id) {
         this.id = id;
         return this;
     }
@@ -37,7 +42,7 @@ public class Role {
         return name;
     }
 
-    public Role setName(String name) {
+    public Group setName(String name) {
         this.name = name;
         return this;
     }
@@ -59,7 +64,7 @@ public class Role {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Role other = (Role) obj;
+        Group other = (Group) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

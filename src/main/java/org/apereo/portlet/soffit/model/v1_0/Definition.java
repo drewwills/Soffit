@@ -26,16 +26,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Provides information about the publication record of the soffit within the
+ * portal.
+ *
+ * @author drewwills
+ */
 public class Definition {
 
     private String title;
-    private String name;
     private String fname;
     private String description;
-    private int timeout;
 
     private Set<String> categories = new HashSet<>();
     private Map<String,List<String>> parameters = new HashMap<>();
+    private Map<String,List<String>> preferences = new HashMap<>();
 
     public String getTitle() {
         return title;
@@ -43,15 +48,6 @@ public class Definition {
 
     public Definition setTitle(String title) {
         this.title = title;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Definition setName(String name) {
-        this.name = name;
         return this;
     }
 
@@ -70,15 +66,6 @@ public class Definition {
 
     public Definition setDescription(String description) {
         this.description = description;
-        return this;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public Definition setTimeout(int timeout) {
-        this.timeout = timeout;
         return this;
     }
 
@@ -108,6 +95,19 @@ public class Definition {
         parameters.put(key, values);
     }
 
+    public Map<String, List<String>> getPreferences() {
+        // Defensive copy
+        return Collections.unmodifiableMap(preferences);
+    }
+
+    public List<String> removePreference(String key) {
+        return preferences.remove(key);
+    }
+
+    public void setPreference(String key, List<String> values) {
+        preferences.put(key, values);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -115,9 +115,8 @@ public class Definition {
         result = prime * result + ((categories == null) ? 0 : categories.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((fname == null) ? 0 : fname.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-        result = prime * result + timeout;
+        result = prime * result + ((preferences == null) ? 0 : preferences.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         return result;
     }
@@ -146,17 +145,15 @@ public class Definition {
                 return false;
         } else if (!fname.equals(other.fname))
             return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
         if (parameters == null) {
             if (other.parameters != null)
                 return false;
         } else if (!parameters.equals(other.parameters))
             return false;
-        if (timeout != other.timeout)
+        if (preferences == null) {
+            if (other.preferences != null)
+                return false;
+        } else if (!preferences.equals(other.preferences))
             return false;
         if (title == null) {
             if (other.title != null)
@@ -168,8 +165,8 @@ public class Definition {
 
     @Override
     public String toString() {
-        return "Definition [title=" + title + ", name=" + name + ", fname=" + fname + ", description=" + description
-                + ", timeout=" + timeout + ", categories=" + categories + ", parameters=" + parameters + "]";
+        return "Definition [title=" + title + ", fname=" + fname + ", description=" + description + ", categories="
+                + categories + ", parameters=" + parameters + ", preferences=" + preferences + "]";
     }
 
 }

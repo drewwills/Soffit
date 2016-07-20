@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.portlet.soffit.model.v1_0.Payload;
+import org.apereo.portlet.soffit.model.v1_0.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,7 +162,7 @@ public class SoffitRendererController {
         final Set<String> moduleResources = req.getSession().getServletContext().getResourcePaths(modulePath);
 
         // Need to make a selection based on 3 things:  module (above), mode, & windowState
-        final String modeLowercase = soffit.getRequest().getMode().toLowerCase();
+        final String modeLowercase = soffit.getRequest().getAttributes().get(Request.MODE).get(0).toLowerCase();
         final String windowStateLowercase = soffit.getRequest().getWindowState().toLowerCase();
 
         final ViewTuple viewTuple = new ViewTuple(modulePath, modeLowercase, windowStateLowercase);
@@ -185,13 +186,13 @@ public class SoffitRendererController {
                     rslt = pathBasedOnModeOnly;
                 } else {
                     throw new IllegalStateException("Unable to select a view for PortletMode="
-                            + soffit.getRequest().getMode() + " and WindowState=" + soffit.getRequest().getWindowState());
+                            + modeLowercase + " and WindowState=" + soffit.getRequest().getWindowState());
                 }
             }
         }
 
         logger.info("Selected viewName='{}' for PortletMode='{}' and WindowState='{}'",
-                                rslt, soffit.getRequest().getMode(), soffit.getRequest().getWindowState());
+                                rslt, modeLowercase, soffit.getRequest().getWindowState());
 
         return rslt;
 

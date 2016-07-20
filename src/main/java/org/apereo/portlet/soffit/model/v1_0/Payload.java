@@ -19,6 +19,11 @@
 
 package org.apereo.portlet.soffit.model.v1_0;
 
+/**
+ * Top-level structure for data passed from a portal to a soffit.
+ *
+ * @author drewwills
+ */
 public class Payload {
 
     private Request request;
