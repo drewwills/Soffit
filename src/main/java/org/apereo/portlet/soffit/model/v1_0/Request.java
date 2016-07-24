@@ -64,6 +64,12 @@ public class Request {
     private Map<String,List<String>> parameters = new HashMap<>();
     private Map<String,String> properties = new HashMap<>();
 
+    /**
+     * A unique, container-provided identifier for the content produced by this
+     * Soffit.  The value must conform to the rules for Javascript variables,
+     * element IDs, and CSS clasess.  It should be used in these capacities to
+     * prevent naming collisions in the DOM.
+     */
     public String getWindowId() {
         return windowId;
     }
