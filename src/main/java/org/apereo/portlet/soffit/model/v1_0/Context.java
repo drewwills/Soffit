@@ -22,19 +22,26 @@ package org.apereo.portlet.soffit.model.v1_0;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Provides information about the portal or container in which the soffit is
+ * running.
+ *
+ * @author drewwills
+ */
 public class Context {
 
     private String portalInfo;
-    private String serverInfo;
 
-    private Map<String,String> initParameters = new HashMap<>();
-    private Set<String> containerRuntimeOptions = new HashSet<>();
-    private Set<String> supportedModes = new HashSet<>();
+    private Map<String,List<String>> attributes = new HashMap<>();
     private Set<String> supportedWindowStates = new HashSet<>();
 
+    /**
+     * Identifying platform and version information about the calling portal.
+     */
     public String getPortalInfo() {
         return portalInfo;
     }
@@ -44,51 +51,17 @@ public class Context {
         return this;
     }
 
-    public String getServerInfo() {
-        return serverInfo;
-    }
-
-    public Context setServerInfo(String serverInfo) {
-        this.serverInfo = serverInfo;
-        return this;
-    }
-
-    public Map<String, String> getInitParameters() {
+    public Map<String, List<String>> getAttributes() {
         // Defensive copy
-        return Collections.unmodifiableMap(initParameters);
+        return Collections.unmodifiableMap(attributes);
     }
 
-    public String removeInitParameter(String key) {
-        return initParameters.remove(key);
+    public List<String> removeAttribute(String key) {
+        return attributes.remove(key);
     }
 
-    public void setInitParameter(String key, String value) {
-        initParameters.put(key, value);
-    }
-
-    public Set<String> getContainerRuntimeOptions() {
-        return containerRuntimeOptions;
-    }
-
-    public void addContainerRuntimeOption(String containerRuntimeOption) {
-        containerRuntimeOptions.add(containerRuntimeOption);
-    }
-
-    public boolean removeContainerRuntimeOption(String containerRuntimeOption) {
-        return containerRuntimeOptions.remove(containerRuntimeOption);
-    }
-
-    public Set<String> getSupportedModes() {
-        // Defensive copy
-        return Collections.unmodifiableSet(supportedModes);
-    }
-
-    public void addSupportedMode(String mode) {
-        supportedModes.add(mode);
-    }
-
-    public boolean removeSupportedMode(String mode) {
-        return supportedModes.remove(mode);
+    public void setAttribute(String key, List<String> values) {
+        attributes.put(key, values);
     }
 
     public Set<String> getSupportedWindowStates() {
@@ -108,11 +81,7 @@ public class Context {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((containerRuntimeOptions == null) ? 0 : containerRuntimeOptions.hashCode());
-        result = prime * result + ((initParameters == null) ? 0 : initParameters.hashCode());
         result = prime * result + ((portalInfo == null) ? 0 : portalInfo.hashCode());
-        result = prime * result + ((serverInfo == null) ? 0 : serverInfo.hashCode());
-        result = prime * result + ((supportedModes == null) ? 0 : supportedModes.hashCode());
         result = prime * result + ((supportedWindowStates == null) ? 0 : supportedWindowStates.hashCode());
         return result;
     }
@@ -126,30 +95,10 @@ public class Context {
         if (getClass() != obj.getClass())
             return false;
         Context other = (Context) obj;
-        if (containerRuntimeOptions == null) {
-            if (other.containerRuntimeOptions != null)
-                return false;
-        } else if (!containerRuntimeOptions.equals(other.containerRuntimeOptions))
-            return false;
-        if (initParameters == null) {
-            if (other.initParameters != null)
-                return false;
-        } else if (!initParameters.equals(other.initParameters))
-            return false;
         if (portalInfo == null) {
             if (other.portalInfo != null)
                 return false;
         } else if (!portalInfo.equals(other.portalInfo))
-            return false;
-        if (serverInfo == null) {
-            if (other.serverInfo != null)
-                return false;
-        } else if (!serverInfo.equals(other.serverInfo))
-            return false;
-        if (supportedModes == null) {
-            if (other.supportedModes != null)
-                return false;
-        } else if (!supportedModes.equals(other.supportedModes))
             return false;
         if (supportedWindowStates == null) {
             if (other.supportedWindowStates != null)
@@ -161,9 +110,7 @@ public class Context {
 
     @Override
     public String toString() {
-        return "Context [portalInfo=" + portalInfo + ", serverInfo=" + serverInfo + ", initParameters=" + initParameters
-                + ", containerRuntimeOptions=" + containerRuntimeOptions + ", supportedModes=" + supportedModes
-                + ", supportedWindowStates=" + supportedWindowStates + "]";
+        return "Context [portalInfo=" + portalInfo + ", supportedWindowStates=" + supportedWindowStates + "]";
     }
 
 }

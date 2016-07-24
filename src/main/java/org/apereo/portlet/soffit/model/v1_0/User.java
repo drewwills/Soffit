@@ -26,13 +26,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Provides information about the portal user on whose behalf the soffit is
+ * executing.
+ *
+ * @author drewwills
+ */
 public class User {
 
     private String username;
-    private Session session;
 
     private Map<String,List<String>> attributes = new HashMap<>();
-    private Set<Role> roles = new HashSet<>();
+    private Set<Group> groups = new HashSet<>();
 
     /**
      * The login of the user making this request, if the user has been
@@ -44,15 +49,6 @@ public class User {
 
     public User setUsername(String username) {
         this.username = username;
-        return this;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    public User setSession(Session session) {
-        this.session = session;
         return this;
     }
 
@@ -69,17 +65,17 @@ public class User {
         attributes.put(key, values);
     }
 
-    public Set<Role> getRoles() {
+    public Set<Group> getGroups() {
         // Defensive copy
-        return Collections.unmodifiableSet(roles);
+        return Collections.unmodifiableSet(groups);
     }
 
-    public void addRole(Role role) {
-        roles.add(role);
+    public void addGroup(Group group) {
+        groups.add(group);
     }
 
-    public boolean removeRole(Role role) {
-        return roles.remove(role);
+    public boolean removeGroup(Group group) {
+        return groups.remove(group);
     }
 
     @Override
@@ -87,8 +83,7 @@ public class User {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
-        result = prime * result + ((roles == null) ? 0 : roles.hashCode());
-        result = prime * result + ((session == null) ? 0 : session.hashCode());
+        result = prime * result + ((groups == null) ? 0 : groups.hashCode());
         result = prime * result + ((username == null) ? 0 : username.hashCode());
         return result;
     }
@@ -107,15 +102,10 @@ public class User {
                 return false;
         } else if (!attributes.equals(other.attributes))
             return false;
-        if (roles == null) {
-            if (other.roles != null)
+        if (groups == null) {
+            if (other.groups != null)
                 return false;
-        } else if (!roles.equals(other.roles))
-            return false;
-        if (session == null) {
-            if (other.session != null)
-                return false;
-        } else if (!session.equals(other.session))
+        } else if (!groups.equals(other.groups))
             return false;
         if (username == null) {
             if (other.username != null)
@@ -127,8 +117,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [username=" + username + ", session=" + session + ", attributes=" + attributes + ", roles=" + roles
-                + "]";
+        return "User [username=" + username + ", attributes=" + attributes + ", groups=" + groups + "]";
     }
 
 }
