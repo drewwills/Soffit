@@ -157,11 +157,15 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
         }
 
-        try {
-            res.getPortletOutputStream().write(responseValue.getBytes());
-        } catch (IOException e) {
-            logger.error("Failed to write the response for serviceUrl '{}'", serviceUrl, e);
+        if (responseValue != null) {
+            // Whenther by cache or by fresh HTTP request, we have a response we can show...
+            try {
+                res.getPortletOutputStream().write(responseValue.getBytes());
+            } catch (IOException e) {
+                logger.error("Failed to write the response for serviceUrl '{}'", serviceUrl, e);
+            }
         }
+
 
     }
 
