@@ -44,6 +44,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.apereo.portlet.soffit.renderer.SoffitRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@RequestMapping(value={"VIEW","EDIT","HELP","CONFIG"})
+@RequestMapping(value={"VIEW","EDIT","HELP"})
 public class SoffitConnectorController implements ApplicationContextAware {
 
     /**
@@ -82,11 +83,11 @@ public class SoffitConnectorController implements ApplicationContextAware {
             .setConnectTimeout(TIMEOUT_SECONDS * 1000)
             .build();
 
-    private final CloseableHttpClient httpClient = HttpClientBuilder
+    private final HttpClientBuilder httpClientBuilder = HttpClientBuilder
             .create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(poolingHttpClientConnectionManager)
-            .build();
+            .setConnectionManagerShared(true);  // Prevents the client from shutting down the pool
 
     private ApplicationContext applicationContext;
     private final List<ISoffitLoader> soffitLoaders = new ArrayList<>();
@@ -127,7 +128,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
             logger.debug("No applicable response in cache;  invoking serviceUrl '{}'", serviceUrl);
 
             final HttpPost postMethod = new HttpPost(serviceUrl);
-            try {
+            try (final CloseableHttpClient httpClient = httpClientBuilder.build()) {
 
                 // Provide a payload
                 final Object payload = buildPayload(req, res);
@@ -140,13 +141,15 @@ public class SoffitConnectorController implements ApplicationContextAware {
                 final int statusCode = httpResponse.getStatusLine().getStatusCode();
                 logger.debug("HTTP response code for url '{}' was '{}'", serviceUrl, statusCode);
 
-                if (statusCode != HttpStatus.SC_OK) {
+                if (statusCode == HttpStatus.SC_OK) {
+                    responseValue = extractResponseAndCacheIfAppropriate(httpResponse, req, serviceUrl);
+                } else {
                     logger.error("Failed to get content from remote service '{}';  HttpStatus={}", serviceUrl, statusCode);
                     res.getWriter().write("FAILED!  statusCode="+statusCode);  // TODO:  Better message
-                    return;
                 }
 
-                responseValue = extractResponseAndCacheIfAppropriate(httpResponse, req, serviceUrl);
+                // Ensures that the entity content is fully consumed and the content stream, if exists, is closed.
+                EntityUtils.consume(httpResponse.getEntity());
 
             } catch (IOException e) {
                 logger.error("Failed to invoke serviceUrl '{}'", serviceUrl, e);
