@@ -16,4 +16,7 @@
     <context:annotation-config />
     <context:component-scan base-package="org.apereo.portlet.soffit.connector" />
 
+    <!-- Allows the SoffitConnectorController to benefit from uPortal's PlaceholderConfigurer -->
+    <bean parent="primaryPropertyPlaceholderConfigurer" />
+
 </beans>
