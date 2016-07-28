@@ -52,6 +52,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.OrderComparator;
@@ -76,7 +77,12 @@ public class SoffitConnectorController implements ApplicationContextAware {
     private static final int TIMEOUT_SECONDS = 10;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
+
+    @Value("${org.apereo.portlet.soffit.connector.SoffitConnectorController.maxConnectionsPerRoute:20}")
+    private Integer maxConnectionsPerRoute;
+
+    @Value("${org.apereo.portlet.soffit.connector.SoffitConnectorController.maxConnectionsTotal:50}")
+    private Integer maxConnectionsTotal;
 
     private final RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(TIMEOUT_SECONDS * 1000)
@@ -86,7 +92,6 @@ public class SoffitConnectorController implements ApplicationContextAware {
     private final HttpClientBuilder httpClientBuilder = HttpClientBuilder
             .create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(poolingHttpClientConnectionManager)
             .setConnectionManagerShared(true);  // Prevents the client from shutting down the pool
 
     private ApplicationContext applicationContext;
@@ -105,6 +110,11 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
     @PostConstruct
     public void init() {
+        PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
+        poolingHttpClientConnectionManager.setDefaultMaxPerRoute(maxConnectionsPerRoute);
+        poolingHttpClientConnectionManager.setMaxTotal(maxConnectionsTotal);
+        httpClientBuilder.setConnectionManager(poolingHttpClientConnectionManager);
+
         final Map<String, ISoffitLoader> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ISoffitLoader.class);
         soffitLoaders.addAll(map.values());
         Collections.sort(soffitLoaders, new OrderComparator());
