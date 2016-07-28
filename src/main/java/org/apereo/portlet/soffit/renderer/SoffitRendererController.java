@@ -9,8 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apereo.portlet.soffit.Headers;
+import org.apereo.portlet.soffit.connector.SoffitConnectorController;
+import org.apereo.portlet.soffit.connector.UserDetailsService;
 import org.apereo.portlet.soffit.model.v1_0.Payload;
 import org.apereo.portlet.soffit.model.v1_0.Request;
+import org.apereo.portlet.soffit.model.v1_0.UserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +73,9 @@ public class SoffitRendererController {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Value("${soffit.renderer.viewsLocation:/WEB-INF/soffit/}")
     private String viewsLocation;
     private final Map<ViewTuple,String> availableViews = new HashMap<>();
@@ -96,6 +103,14 @@ public class SoffitRendererController {
 
             // Deserialize the payload
             final Object soffit = objectMapper.readValue(soffitJson, payloadClass);
+
+            // Authorization header Bearer token
+            final String authorizationHeader = req.getHeader(Headers.AUTHORIZATION.getName());
+            final String bearerToken = authorizationHeader.substring(SoffitConnectorController.BEARER_PREFIX.length());
+            final UserDetails user = userDetailsService.parseBearerToken(bearerToken);
+
+System.out.println(" ## user="+user);
+System.out.println(" ## ");
 
             // Select a view
             final String viewName = selectView(req, module, soffit);

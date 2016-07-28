@@ -45,6 +45,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.apereo.portlet.soffit.Headers;
 import org.apereo.portlet.soffit.renderer.SoffitRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 @RequestMapping(value={"VIEW","EDIT","HELP"})
 public class SoffitConnectorController implements ApplicationContextAware {
+
+    /**
+     * Prepended to the Authorization HTTP header.
+     */
+    public static final String BEARER_PREFIX = "Bearer ";
 
     /**
      * Preferences that begin with this String will not be shared with the remote soffit.
@@ -96,6 +102,9 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     private final List<ISoffitLoader> soffitLoaders = new ArrayList<>();
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     @Qualifier(value="org.apereo.portlet.soffit.connector.SoffitConnectorController.RESPONSE_CACHE")
@@ -143,6 +152,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
                 // Provide a payload
                 final Object payload = buildPayload(req, res);
                 postMethod.setHeader(SoffitRendererController.PAYLOAD_CLASS_HEADER, payload.getClass().getName());
+                postMethod.setHeader(Headers.AUTHORIZATION.getName(), BEARER_PREFIX + this.getUserDetails(payload).getBearerToken());
                 final String json = objectMapper.writeValueAsString(payload);
                 postMethod.setEntity(new StringEntity(json));
 
@@ -278,6 +288,18 @@ public class SoffitConnectorController implements ApplicationContextAware {
             throw new RuntimeException(msg, e);
         }
 
+    }
+
+    // TODO:  Refactor
+    private org.apereo.portlet.soffit.model.v1_0.UserDetails getUserDetails(Object payload) {
+        final org.apereo.portlet.soffit.model.v1_0.Payload p = (org.apereo.portlet.soffit.model.v1_0.Payload) payload;
+
+        final List<String> groups = new ArrayList<>();
+        for (org.apereo.portlet.soffit.model.v1_0.Group g : p.getUser().getGroups()) {
+            groups.add(g.getName());
+        }
+
+        return userDetailsService.createUserDetails(p.getUser().getUsername(), p.getUser().getAttributes(), groups);
     }
 
     /*
