@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apereo.portlet.soffit.connector;
+package org.apereo.portlet.soffit.service;
 
 import java.util.List;
 import java.util.Map;
