@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,11 +93,6 @@ public class SoffitRendererController {
             // Deserialize the payload
             final Object soffit = objectMapper.readValue(soffitJson, payloadClass);
 
-            // Authorization header Bearer token
-            final String authorizationHeader = req.getHeader(Headers.AUTHORIZATION.getName());
-            final String bearerToken = authorizationHeader.substring(Headers.BEARER_TOKEN_PREFIX.length());
-            final Bearer user = userDetailsService.parseBearerToken(bearerToken);
-
             // Select a view
             final String viewName = selectView(req, module, soffit);
 
@@ -113,6 +109,13 @@ public class SoffitRendererController {
             throw new IllegalArgumentException(msg, e);
         }
 
+    }
+
+    @ModelAttribute("bearer")
+    public Bearer getBearer(final HttpServletRequest req) {
+        final String authorizationHeader = req.getHeader(Headers.AUTHORIZATION.getName());
+        final String bearerToken = authorizationHeader.substring(Headers.BEARER_TOKEN_PREFIX.length());
+        return userDetailsService.parseBearerToken(bearerToken);
     }
 
     /*
