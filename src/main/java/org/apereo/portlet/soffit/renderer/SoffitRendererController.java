@@ -34,17 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SoffitRendererController {
 
     /**
-     * Name of HTTP header sent by the {@link SoffitConnectorController} to
-     * signal which POJO the JSON payload my be deserialized into.  This is a
-     * strategy for versioning and backwards compatibility.  The receiver of an
-     * older payload is free to transform it to a newer one, if a newer one is
-     * available (and that's the tactic we'll likely emply when it comes to it).
-     */
-    public static final String PAYLOAD_CLASS_HEADER = "X-Soffit-PayloadClass";
-
-    public static final String CACHE_CONTROL_HEADER = "Cache-Control";
-
-    /**
      * The default value for the <code>Cache-Control</code> header is "no-cache,"
      * which indicates the response should not be cached (until we later
      * implement ETag-based caching).  This header value will be sent if the
@@ -93,9 +82,9 @@ public class SoffitRendererController {
         String payloadClassName = null;
         try {
 
-            payloadClassName = req.getHeader(PAYLOAD_CLASS_HEADER);
+            payloadClassName = req.getHeader(Headers.PAYLOAD_CLASS.getName());
             if (payloadClassName == null) {
-                final String msg = "HTTP Header '" + PAYLOAD_CLASS_HEADER + "' not specified";
+                final String msg = "HTTP Header '" + Headers.PAYLOAD_CLASS.getName() + "' not specified";
                 throw new IllegalArgumentException(msg);
             }
             final Class<?> payloadClass = Class.forName(payloadClassName);
@@ -150,7 +139,7 @@ System.out.println(" ## ");
                 : CACHE_CONTROL_NOCACHE;
         logger.debug("Setting cache-control='{}' for module '{}'", cacheControl, module);
 
-        res.setHeader(CACHE_CONTROL_HEADER, cacheControl);
+        res.setHeader(Headers.CACHE_CONTROL.getName(), cacheControl);
 
     }
 

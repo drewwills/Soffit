@@ -19,9 +19,47 @@
 
 package org.apereo.portlet.soffit;
 
+import org.apereo.portlet.soffit.connector.SoffitConnectorController;
+
 public enum Headers {
 
-    AUTHORIZATION("Authorization");
+    /*
+     * Standard HTTP headers
+     */
+
+    /**
+     * The Authorization field value consists of credentials containing the
+     * authentication information of the user agent for the realm of the
+     * resource being requested.
+     *
+     * @since 5.0
+     */
+    AUTHORIZATION("Authorization"),
+
+    /**
+     * Used to specify directives that MUST be obeyed by all caching mechanisms
+     * along the request/response chain. The directives specify behavior
+     * intended to prevent caches from adversely interfering with the request or
+     * response.
+     *
+     * @since 5.0
+     */
+    CACHE_CONTROL("Cache-Control"),
+
+    /*
+     * Custom headers
+     */
+
+    /**
+     * HTTP header sent by the {@link SoffitConnectorController} to
+     * signal which POJO the JSON payload my be deserialized into.  This is a
+     * strategy for versioning and backwards compatibility.  The receiver of an
+     * older payload is free to transform it to a newer one, if a newer one is
+     * available (and that's the tactic we'll likely emply when it comes to it).
+     *
+     * @since 5.0
+     */
+    PAYLOAD_CLASS("X-Soffit-PayloadClass");
 
     /*
      * Implementation

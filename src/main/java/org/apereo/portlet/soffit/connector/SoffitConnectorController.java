@@ -151,7 +151,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
                 // Provide a payload
                 final Object payload = buildPayload(req, res);
-                postMethod.setHeader(SoffitRendererController.PAYLOAD_CLASS_HEADER, payload.getClass().getName());
+                postMethod.setHeader(Headers.PAYLOAD_CLASS.getName(), payload.getClass().getName());
                 postMethod.setHeader(Headers.AUTHORIZATION.getName(), BEARER_PREFIX + this.getUserDetails(payload).getBearerToken());
                 final String json = objectMapper.writeValueAsString(payload);
                 postMethod.setEntity(new StringEntity(json));
@@ -236,7 +236,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
         }
 
         // Cache the response if indicated by the remote service
-        final Header cacheControlHeader = httpResponse.getFirstHeader(SoffitRendererController.CACHE_CONTROL_HEADER);
+        final Header cacheControlHeader = httpResponse.getFirstHeader(Headers.CACHE_CONTROL.getName());
         if (cacheControlHeader != null) {
             final String cacheControlValue = cacheControlHeader.getValue();
             logger.debug("Soffit with serviceUrl='{}' specified cache-control header value='{}'",
