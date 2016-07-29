@@ -28,22 +28,22 @@ import java.util.Map;
  *
  * @author drewwills
  */
-public class UserDetails {
+public class Bearer {
 
-    private final String bearerToken;
+    private final String token;
     private final String username;
     private final Map<String,List<String>> attributes;
     private final List<String> groups;
 
-    public UserDetails(String bearerToken, String username, Map<String,List<String>> attributes, List<String> groups) {
-        this.bearerToken = bearerToken;
+    public Bearer(String token, String username, Map<String,List<String>> attributes, List<String> groups) {
+        this.token = token;
         this.username = username;
         this.attributes = Collections.unmodifiableMap(attributes);
         this.groups = Collections.unmodifiableList(groups);
     }
 
-    public String getBearerToken() {
-        return bearerToken;
+    public String getToken() {
+        return token;
     }
 
     public String getUsername() {
@@ -60,8 +60,8 @@ public class UserDetails {
 
     @Override
     public String toString() {
-        return "UserDetails [bearerToken=" + bearerToken + ", username=" + username + ", attributes=" + attributes
-                + ", groups=" + groups + "]";
+        return "Bearer [token=" + token + ", username=" + username + ", attributes=" + attributes + ", groups=" + groups
+                + "]";
     }
 
 }

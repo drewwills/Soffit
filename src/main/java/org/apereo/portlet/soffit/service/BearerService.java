@@ -22,7 +22,7 @@ package org.apereo.portlet.soffit.service;
 import java.util.List;
 import java.util.Map;
 
-import org.apereo.portlet.soffit.model.v1_0.UserDetails;
+import org.apereo.portlet.soffit.model.v1_0.Bearer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * @author drewwills
  */
 @Service
-public class UserDetailsService {
+public class BearerService {
 
     public static final String JWT_ISSUER = "Soffit";
 
@@ -57,23 +57,22 @@ public class UserDetailsService {
             this.name = name;
         }
 
-        @Override
-        public String toString() {
+        public String getName() {
             return name;
         }
 
     }
 
-    @Value("${org.apereo.portlet.soffit.model.v1_0.UserDetailsService.signatureKey}")
+    @Value("${org.apereo.portlet.soffit.model.v1_0.BearerService.signatureKey}")
     private String signatureKey;
 
-    public UserDetails createUserDetails(String username, Map<String,List<String>> attributes, List<String> groups) {
+    public Bearer createBearer(String username, Map<String,List<String>> attributes, List<String> groups) {
 
         final Claims claims = Jwts.claims()
                 .setIssuer(JWT_ISSUER)
                 .setSubject(username);
-        claims.put(Keys.ATTRIBUTES.toString(), attributes);
-        claims.put(Keys.GROUPS.toString(), groups);
+        claims.put(Keys.ATTRIBUTES.getName(), attributes);
+        claims.put(Keys.GROUPS.getName(), groups);
 
         final String bearerToken = Jwts.builder()
                 .setClaims(claims)
@@ -82,21 +81,23 @@ public class UserDetailsService {
 
         // TODO:  Encryption
 
-        return new UserDetails(bearerToken, username, attributes, groups);
+        return new Bearer(bearerToken, username, attributes, groups);
 
     }
 
-    public UserDetails parseBearerToken(String bearerToken) {
+    public Bearer parseBearerToken(String bearerToken) {
 
         final Jws<Claims> claims = Jwts.parser()
                 .setSigningKey(signatureKey)
                 .parseClaimsJws(bearerToken);
 
         final String username = claims.getBody().getSubject();
-        final Map<String,List<String>> attributes = (Map<String, List<String>>) claims.getBody().get(Keys.ATTRIBUTES.toString());
-        final List<String> groups = (List<String>) claims.getBody().get(Keys.GROUPS.toString());
+        @SuppressWarnings("unchecked")
+        final Map<String,List<String>> attributes = (Map<String, List<String>>) claims.getBody().get(Keys.ATTRIBUTES.getName());
+        @SuppressWarnings("unchecked")
+        final List<String> groups = (List<String>) claims.getBody().get(Keys.GROUPS.getName());
 
-        return new UserDetails(bearerToken, username, attributes, groups);
+        return new Bearer(bearerToken, username, attributes, groups);
 
     }
 
