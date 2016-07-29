@@ -95,11 +95,8 @@ public class SoffitRendererController {
 
             // Authorization header Bearer token
             final String authorizationHeader = req.getHeader(Headers.AUTHORIZATION.getName());
-            final String bearerToken = authorizationHeader.substring(SoffitConnectorController.BEARER_PREFIX.length());
+            final String bearerToken = authorizationHeader.substring(Headers.BEARER_TOKEN_PREFIX.length());
             final UserDetails user = userDetailsService.parseBearerToken(bearerToken);
-
-System.out.println(" ## user="+user);
-System.out.println(" ## ");
 
             // Select a view
             final String viewName = selectView(req, module, soffit);

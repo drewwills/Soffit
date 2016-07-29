@@ -69,8 +69,6 @@ public class UserDetailsService {
 
     public UserDetails createUserDetails(String username, Map<String,List<String>> attributes, List<String> groups) {
 
-System.out.println(" ## signatureKey="+signatureKey);
-
         final Claims claims = Jwts.claims()
                 .setIssuer(JWT_ISSUER)
                 .setSubject(username);

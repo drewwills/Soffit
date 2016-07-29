@@ -61,6 +61,12 @@ public enum Headers {
      */
     PAYLOAD_CLASS("X-Soffit-PayloadClass");
 
+    /**
+     * Prepended to the Authorization HTTP header to indicate that the value
+     * (the rest of it) is a Bearer Token.
+     */
+    public static final String BEARER_TOKEN_PREFIX = "Bearer ";
+
     /*
      * Implementation
      */

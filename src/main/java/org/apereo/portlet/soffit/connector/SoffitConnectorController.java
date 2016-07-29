@@ -68,11 +68,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SoffitConnectorController implements ApplicationContextAware {
 
     /**
-     * Prepended to the Authorization HTTP header.
-     */
-    public static final String BEARER_PREFIX = "Bearer ";
-
-    /**
      * Preferences that begin with this String will not be shared with the remote soffit.
      */
     /* package-private */ static final String CONNECTOR_PREFERENCE_PREFIX = SoffitConnectorController.class.getName();
@@ -102,9 +97,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     private final List<ISoffitLoader> soffitLoaders = new ArrayList<>();
-
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private List<IHeaderProvider> headerProviders;
 
     @Autowired
     @Qualifier(value="org.apereo.portlet.soffit.connector.SoffitConnectorController.RESPONSE_CACHE")
@@ -127,6 +120,10 @@ public class SoffitConnectorController implements ApplicationContextAware {
         final Map<String, ISoffitLoader> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ISoffitLoader.class);
         soffitLoaders.addAll(map.values());
         Collections.sort(soffitLoaders, new OrderComparator());
+
+        final Map<String, IHeaderProvider> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, IHeaderProvider.class);
+        final List<IHeaderProvider> values = new ArrayList<>(beans.values());
+        headerProviders = Collections.unmodifiableList(values);
     }
 
     @RenderMapping
@@ -152,7 +149,10 @@ public class SoffitConnectorController implements ApplicationContextAware {
                 // Provide a payload
                 final Object payload = buildPayload(req, res);
                 postMethod.setHeader(Headers.PAYLOAD_CLASS.getName(), payload.getClass().getName());
-                postMethod.setHeader(Headers.AUTHORIZATION.getName(), BEARER_PREFIX + this.getUserDetails(payload).getBearerToken());
+                for (IHeaderProvider headerProvider : headerProviders) {
+                    final Header header = headerProvider.createHeader(req, res);
+                    postMethod.addHeader(header);
+                }
                 final String json = objectMapper.writeValueAsString(payload);
                 postMethod.setEntity(new StringEntity(json));
 
@@ -288,18 +288,6 @@ public class SoffitConnectorController implements ApplicationContextAware {
             throw new RuntimeException(msg, e);
         }
 
-    }
-
-    // TODO:  Refactor
-    private org.apereo.portlet.soffit.model.v1_0.UserDetails getUserDetails(Object payload) {
-        final org.apereo.portlet.soffit.model.v1_0.Payload p = (org.apereo.portlet.soffit.model.v1_0.Payload) payload;
-
-        final List<String> groups = new ArrayList<>();
-        for (org.apereo.portlet.soffit.model.v1_0.Group g : p.getUser().getGroups()) {
-            groups.add(g.getName());
-        }
-
-        return userDetailsService.createUserDetails(p.getUser().getUsername(), p.getUser().getAttributes(), groups);
     }
 
     /*
