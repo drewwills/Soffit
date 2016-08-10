@@ -45,6 +45,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.apereo.portlet.soffit.Headers;
 import org.apereo.portlet.soffit.renderer.SoffitRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +97,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     private final List<ISoffitLoader> soffitLoaders = new ArrayList<>();
+    private List<IHeaderProvider> headerProviders;
 
     @Autowired
     @Qualifier(value="org.apereo.portlet.soffit.connector.SoffitConnectorController.RESPONSE_CACHE")
@@ -118,6 +120,10 @@ public class SoffitConnectorController implements ApplicationContextAware {
         final Map<String, ISoffitLoader> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ISoffitLoader.class);
         soffitLoaders.addAll(map.values());
         Collections.sort(soffitLoaders, new OrderComparator());
+
+        final Map<String, IHeaderProvider> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, IHeaderProvider.class);
+        final List<IHeaderProvider> values = new ArrayList<>(beans.values());
+        headerProviders = Collections.unmodifiableList(values);
     }
 
     @RenderMapping
@@ -142,7 +148,11 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
                 // Provide a payload
                 final Object payload = buildPayload(req, res);
-                postMethod.setHeader(SoffitRendererController.PAYLOAD_CLASS_HEADER, payload.getClass().getName());
+                postMethod.setHeader(Headers.PAYLOAD_CLASS.getName(), payload.getClass().getName());
+                for (IHeaderProvider headerProvider : headerProviders) {
+                    final Header header = headerProvider.createHeader(req, res);
+                    postMethod.addHeader(header);
+                }
                 final String json = objectMapper.writeValueAsString(payload);
                 postMethod.setEntity(new StringEntity(json));
 
@@ -226,7 +236,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
         }
 
         // Cache the response if indicated by the remote service
-        final Header cacheControlHeader = httpResponse.getFirstHeader(SoffitRendererController.CACHE_CONTROL_HEADER);
+        final Header cacheControlHeader = httpResponse.getFirstHeader(Headers.CACHE_CONTROL.getName());
         if (cacheControlHeader != null) {
             final String cacheControlValue = cacheControlHeader.getValue();
             logger.debug("Soffit with serviceUrl='{}' specified cache-control header value='{}'",

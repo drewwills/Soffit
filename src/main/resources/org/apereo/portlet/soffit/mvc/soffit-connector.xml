@@ -19,4 +19,9 @@
     <!-- Allows the SoffitConnectorController to benefit from uPortal's PlaceholderConfigurer -->
     <bean parent="primaryPropertyPlaceholderConfigurer" />
 
+    <bean class="org.apereo.portlet.soffit.service.BearerService" />
+
+    <!-- This is a bit of a mess:  the Java class is a part of uPortal (not Soffit), but it's referenced in this file.  When this tech is moved into the uPortal project, this mismatch will go away. -->
+    <bean class="org.jasig.portal.soffit.AuthorizationHeaderProvider" />
+
 </beans>

@@ -9,14 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apereo.portlet.soffit.Headers;
 import org.apereo.portlet.soffit.model.v1_0.Payload;
 import org.apereo.portlet.soffit.model.v1_0.Request;
+import org.apereo.portlet.soffit.model.v1_0.Bearer;
+import org.apereo.portlet.soffit.service.BearerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,17 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 @RequestMapping("/soffit")
 public class SoffitRendererController {
-
-    /**
-     * Name of HTTP header sent by the {@link SoffitConnectorController} to
-     * signal which POJO the JSON payload my be deserialized into.  This is a
-     * strategy for versioning and backwards compatibility.  The receiver of an
-     * older payload is free to transform it to a newer one, if a newer one is
-     * available (and that's the tactic we'll likely emply when it comes to it).
-     */
-    public static final String PAYLOAD_CLASS_HEADER = "X-Soffit-PayloadClass";
-
-    public static final String CACHE_CONTROL_HEADER = "Cache-Control";
 
     /**
      * The default value for the <code>Cache-Control</code> header is "no-cache,"
@@ -69,6 +62,9 @@ public class SoffitRendererController {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private BearerService userDetailsService;
+
     @Value("${soffit.renderer.viewsLocation:/WEB-INF/soffit/}")
     private String viewsLocation;
     private final Map<ViewTuple,String> availableViews = new HashMap<>();
@@ -86,9 +82,9 @@ public class SoffitRendererController {
         String payloadClassName = null;
         try {
 
-            payloadClassName = req.getHeader(PAYLOAD_CLASS_HEADER);
+            payloadClassName = req.getHeader(Headers.PAYLOAD_CLASS.getName());
             if (payloadClassName == null) {
-                final String msg = "HTTP Header '" + PAYLOAD_CLASS_HEADER + "' not specified";
+                final String msg = "HTTP Header '" + Headers.PAYLOAD_CLASS.getName() + "' not specified";
                 throw new IllegalArgumentException(msg);
             }
             final Class<?> payloadClass = Class.forName(payloadClassName);
@@ -115,6 +111,13 @@ public class SoffitRendererController {
 
     }
 
+    @ModelAttribute("bearer")
+    public Bearer getBearer(final HttpServletRequest req) {
+        final String authorizationHeader = req.getHeader(Headers.AUTHORIZATION.getName());
+        final String bearerToken = authorizationHeader.substring(Headers.BEARER_TOKEN_PREFIX.length());
+        return userDetailsService.parseBearerToken(bearerToken);
+    }
+
     /*
      * Implementation
      */
@@ -135,7 +138,7 @@ public class SoffitRendererController {
                 : CACHE_CONTROL_NOCACHE;
         logger.debug("Setting cache-control='{}' for module '{}'", cacheControl, module);
 
-        res.setHeader(CACHE_CONTROL_HEADER, cacheControl);
+        res.setHeader(Headers.CACHE_CONTROL.getName(), cacheControl);
 
     }
 
