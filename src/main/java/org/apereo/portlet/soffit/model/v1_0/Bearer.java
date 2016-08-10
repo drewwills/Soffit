@@ -23,27 +23,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apereo.portlet.soffit.ITokenizable;
+
 /**
  * Encapsulates username, attributes, and group affiliations.
  *
  * @author drewwills
  */
-public class Bearer {
+public class Bearer implements ITokenizable {
 
-    private final String token;
+    private final String encryptedToken;
     private final String username;
     private final Map<String,List<String>> attributes;
     private final List<String> groups;
 
-    public Bearer(String token, String username, Map<String,List<String>> attributes, List<String> groups) {
-        this.token = token;
+    public Bearer(String encryptedToken, String username, Map<String,List<String>> attributes, List<String> groups) {
+        this.encryptedToken = encryptedToken;
         this.username = username;
         this.attributes = Collections.unmodifiableMap(attributes);
         this.groups = Collections.unmodifiableList(groups);
     }
 
-    public String getToken() {
-        return token;
+    @Override
+    public String getEncryptedToken() {
+        return encryptedToken;
     }
 
     public String getUsername() {
@@ -60,8 +63,8 @@ public class Bearer {
 
     @Override
     public String toString() {
-        return "Bearer [token=" + token + ", username=" + username + ", attributes=" + attributes + ", groups=" + groups
-                + "]";
+        return "Bearer [encryptedToken=" + encryptedToken + ", username=" + username + ", attributes=" + attributes
+                + ", groups=" + groups + "]";
     }
 
 }

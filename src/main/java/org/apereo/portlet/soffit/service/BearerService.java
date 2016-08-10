@@ -19,8 +19,12 @@
 
 package org.apereo.portlet.soffit.service;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apereo.portlet.soffit.model.v1_0.Bearer;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,9 +47,15 @@ public class BearerService {
 
     private enum Keys {
 
-        GROUPS("groups"),
+        /**
+         * Concrete Java class to which the JWT deserializes.
+         */
+        CLASS("class"),
 
-        ATTRIBUTES("attributes");
+        /**
+         * List of group names to which the user belongs.
+         */
+        GROUPS("groups");
 
         /*
          * Implementation
@@ -55,6 +65,16 @@ public class BearerService {
 
         private Keys(String name) {
             this.name = name;
+        }
+
+        public static Keys forName(String name) {
+            Keys rslt = null;  // default
+            for (Keys k : Keys.values()) {
+                if (k.getName().equals(name)) {
+                    rslt = k;
+                }
+            }
+            return rslt;
         }
 
         public String getName() {
@@ -68,10 +88,39 @@ public class BearerService {
 
     public Bearer createBearer(String username, Map<String,List<String>> attributes, List<String> groups) {
 
+        // Registered claims
         final Claims claims = Jwts.claims()
                 .setIssuer(JWT_ISSUER)
-                .setSubject(username);
-        claims.put(Keys.ATTRIBUTES.getName(), attributes);
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setId(UUID.randomUUID().toString());
+
+        // Deserialization class
+        claims.put(Keys.CLASS.getName(), Bearer.class.getName());
+
+        /*
+         * User attributes; attribute names that match registered attributes
+         * (https://www.iana.org/assignments/jwt/jwt.xhtml) will be
+         * automatically portable.
+         */
+        for (Map.Entry<String,List<String>> y : attributes.entrySet()) {
+            final String name = y.getKey();
+            switch (y.getValue().size()) {
+                case 0:
+                    // Do nothing...
+                    break;
+                case 1:
+                    // Model as a single value (in this a good idea?)
+                    claims.put(name, y.getValue().get(0));
+                    break;
+                default:
+                    // Retain the collection
+                    claims.put(name, y.getValue());
+                    break;
+            }
+        }
+
+        // Groups
         claims.put(Keys.GROUPS.getName(), groups);
 
         final String bearerToken = Jwts.builder()
@@ -91,9 +140,35 @@ public class BearerService {
                 .setSigningKey(signatureKey)
                 .parseClaimsJws(bearerToken);
 
+        // Sanity check
+        final String clazz = (String) claims.getBody().get(Keys.CLASS.getName());
+        if (!Bearer.class.getName().equals(clazz)) {
+            // Opportunity for future versioning of the data model...
+            String msg = "Unsuppored Bearer token class:  " + clazz;
+            throw new RuntimeException(msg);
+        }
+
         final String username = claims.getBody().getSubject();
-        @SuppressWarnings("unchecked")
-        final Map<String,List<String>> attributes = (Map<String, List<String>>) claims.getBody().get(Keys.ATTRIBUTES.getName());
+
+        final Map<String,List<String>> attributes = new HashMap<>();
+        for (Map.Entry<String,Object> y : claims.getBody().entrySet()) {
+            final String key = y.getKey();
+            if (Keys.forName(key) != null) {
+                // Skip these;  we handle these differently
+                continue;
+            }
+
+            if (y.getValue() instanceof List) {
+                @SuppressWarnings("unchecked")
+                final List<String> values = (List<String>) y.getValue();
+                attributes.put(key, values);
+            } else if (y.getValue() instanceof String) {
+                // Convert (back) to a single-item list
+                final String value = (String) y.getValue();
+                attributes.put(key, Collections.singletonList(value));
+            }
+        }
+
         @SuppressWarnings("unchecked")
         final List<String> groups = (List<String>) claims.getBody().get(Keys.GROUPS.getName());
 
