@@ -16,7 +16,21 @@ Soffit is a strategy for adding content to uPortal.  It defines and manages the 
 
 ### Step One:  Add Support for Soffit to uPortal
 
-Soffit is a lightweight addition to uPortal;  very few changes are needed.  There is a [pull request in the uPortal Git repo](https://github.com/Jasig/uPortal/pull/665) that contains a branch with all necessary changes, plus instructions for merging the branch into uPortal `master`.  (*NOTE:*  the Soffit `.jar` file is not "finished" and not released into Maven Central;  you will need to `$git clone` this repo and `$mvn install` it locally before you can build uPortal with Soffit.)
+Soffit is a lightweight addition to uPortal;  very few changes are needed.  There is a [pull request in the uPortal Git repo](https://github.com/Jasig/uPortal/pull/665) that contains a branch with all necessary changes.  (*NOTE:*  the Soffit `.jar` file is not "finished" and not released into Maven Central;  you will need to `$git clone` this repo and `$mvn install` it locally before you can build uPortal with Soffit.)
+
+#### Instructions for merging Soffit support
+
+*NOTE:*  Make sure you clone this project, change the `springVersion` property to 3.2.9.RELEASE, and run `$./gradlew clean install` before performing the steps below.
+
+From inside the root of your uPortal repo...
+
+``` bash
+$git checkout -b add-soffit
+$git remote add drewwills https://github.com/drewwills/uPortal.git
+$git fetch drewwills
+$git git merge drewwills/add-soffit
+$ant clean deploy-ear
+```
 
 ### Step Two:  Develop a Soffit
 
