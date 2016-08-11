@@ -1,6 +1,6 @@
 # Apereo Soffit
 
-Soffit is a technology for creating content that runs in [Apereo uPortal](https://www.apereo.org/projects/uportal).  It is intended as an alternative to [JSR-286 portlet development](https://jcp.org/en/jsr/detail?id=286).
+Soffit is a technology for creating content that runs in [Apereo uPortal](https://www.apereo.org/projects/uportal).  It is intended as an alternative to [JSR-286 portlet development](https://jcp.org/en/jsr/detail?id=286).  For the present, this technology is developed as an add-on in a separate repo (this one);  in the near future, we hope to include it to the uPortal project directly and depricate this repo.  We will post an announcement here when that happens.
 
 ## Why Would I Want This Component?
 
@@ -12,11 +12,19 @@ Apereo Soffit is an alternative approach to producing content for uPortal that i
 
 ## How Does It Work?
 
-Add Soffit to your Java Web Application.  Use `.jsp` or `.html` files to create the markup you want to appear in your content.  That's it!  With every other aspect of your project, simply carry on with what you were doing.  Soffit allows your content to run in uPortal and gets out of your way so you can do development the way that you want to.
+Soffit is a strategy for adding content to uPortal.  It defines and manages the relationship between content objects (widgets) and the portal service itself.  There are two required steps for using soffits.
 
-### Modern Web User Interfaces
+### Step One:  Add Support for Soffit to uPortal
 
-Soffit assumes that you want to develop user interfaces using Javascript and modern frameworks like [React](https://facebook.github.io/react/), [AngularJS](https://angularjs.org/), [Backbone.js](http://backbonejs.org/), _etc_.  Normally a Soffit component will render one time;  considerations like state changes, transactions, persistance, _etc_. are typically handled with Javascript and REST.
+Soffit is a lightweight addition to uPortal;  very few changes are needed.  There is a [pull request in the uPortal Git repo](https://github.com/Jasig/uPortal/pull/665) that contains a branch with all necessary changes, plus instructions for merging the branch into uPortal `master`.  (*NOTE:*  the Soffit `.jar` file is not "finished" and not released into Maven Central;  you will need to `$git clone` this repo and `$mvn install` it locally before you can build uPortal with Soffit.)
+
+### Step Two:  Develop a Soffit
+
+In Java, create a web application and add the Soffit `.jar` as a dependency.  Define a few Soffit components as [Spring beans](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/beans.html).  Use `.jsp` or `.html` files to create the markup you want to appear in your content.  That's it!  With every other aspect of your project, simply carry on with what you were doing.  Soffit allows your content to run in uPortal and gets out of your way so you can do development the way that you want to.  (See *Minimal Soffit* below.)
+
+## Modern Web User Interfaces
+
+Soffit assumes that you want to develop user interfaces using Javascript and modern frameworks like [React](https://facebook.github.io/react/), [AngularJS](https://angularjs.org/), [Backbone.js](http://backbonejs.org/), _etc_.  Normally a Soffit component will render one time;  considerations like state changes, transactions, persistence, _etc_. are typically handled with Javascript and REST.
 
 ## Minimal Soffit
 
@@ -40,14 +48,24 @@ Maven Example:
 </dependency>
 ```
 
-### Define the SoffitRendererController as a bean within your application
+### Define the Soffit components as beans within your application
 
 Spring Boot Example:
 
 ``` java
-@Bean
-public SoffitRendererController soffitRendererController() {
-    return new SoffitRendererController();
+import org.apereo.portlet.soffit.renderer.SoffitRenderConfiguration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
+
+@SpringBootApplication
+@Import(SoffitRenderConfiguration.class)
+public class SomeAmazingSoffitApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SomeAmazingSoffitApplication.class, args);
+    }
+
 }
 ```
 
@@ -61,7 +79,7 @@ public SoffitRendererController soffitRendererController() {
 
 That's it -- try it out!
 
-You're ready to build and start your soffit.  If you're running locally, you can either use a different port than the portal (e.g. 8090) or deploy your `.war` file to Tomcat beside the portal.
+You're ready to build and start your soffit.  If you're running locally, you can either use a different port than the portal (e.g. 8090) or build to a `.war` file and deploy it to Tomcat beside the portal.
 
 ## A note on `tomcat-embed-jasper` for Spring Boot applications
 
@@ -99,3 +117,7 @@ Cache-Control: public, max-age=300
 ```
 
 Cache scope may be `public` (shared by all users) or `private` (cached per-user).  Specify `max-age` in seconds.
+
+## Sample Applications
+
+There are several sample applications in [this repo](https://github.com/drewwills/soffit-samples).
