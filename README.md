@@ -28,7 +28,7 @@ From inside the root of your uPortal repo...
 $git checkout -b add-soffit
 $git remote add drewwills https://github.com/drewwills/uPortal.git
 $git fetch drewwills
-$git git merge drewwills/add-soffit
+$git merge drewwills/add-soffit
 $ant clean deploy-ear
 ```
 
