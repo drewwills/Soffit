@@ -67,13 +67,13 @@ Maven Example:
 Spring Boot Example:
 
 ``` java
-import org.apereo.portlet.soffit.renderer.SoffitRenderConfiguration;
+import org.apereo.portlet.soffit.renderer.SoffitRendererConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(SoffitRenderConfiguration.class)
+@Import(SoffitRendererConfiguration.class)
 public class SomeAmazingSoffitApplication {
 
     public static void main(String[] args) {
