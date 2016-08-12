@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
  * @author drewwills
  */
 @Configuration
-public class SoffitRenderConfiguration {
+public class SoffitRendererConfiguration {
 
     @Bean
     public SoffitRendererController soffitRendererController() {
