@@ -49,7 +49,7 @@ Follow these three steps to create a minimal Soffit component.
 Gradle Example:
 
 ``` gradle
-compile group: 'org.apereo.portal', name: 'soffit', version: "1.0.0-SNAPSHOT"
+compile group: 'org.apereo.portal', name: 'soffit', version: "0.9.0-SNAPSHOT"
 ```
 
 Maven Example:
