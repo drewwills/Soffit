@@ -24,16 +24,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apereo.portlet.soffit.model.v1_0.Bearer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * Responsible for issuing and parsing Bearer tokens.
@@ -41,16 +37,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * @author drewwills
  */
 @Service
-public class BearerService {
-
-    public static final String JWT_ISSUER = "Soffit";
+public class BearerService extends AbstractJwtService {
 
     private enum Keys {
-
-        /**
-         * Concrete Java class to which the JWT deserializes.
-         */
-        CLASS("class"),
 
         /**
          * List of group names to which the user belongs.
@@ -83,20 +72,12 @@ public class BearerService {
 
     }
 
-    @Value("${org.apereo.portlet.soffit.model.v1_0.BearerService.signatureKey}")
-    private String signatureKey;
+    public Bearer createBearer(String username, Map<String,List<String>> attributes, List<String> groups, Date expires) {
 
-    public Bearer createBearer(String username, Map<String,List<String>> attributes, List<String> groups) {
+        final Claims claims = createClaims(Bearer.class, expires);
 
-        // Registered claims
-        final Claims claims = Jwts.claims()
-                .setIssuer(JWT_ISSUER)
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setId(UUID.randomUUID().toString());
-
-        // Deserialization class
-        claims.put(Keys.CLASS.getName(), Bearer.class.getName());
+        // Username
+        claims.setSubject(username);
 
         /*
          * User attributes; attribute names that match registered attributes
@@ -123,37 +104,20 @@ public class BearerService {
         // Groups
         claims.put(Keys.GROUPS.getName(), groups);
 
-        final String bearerToken = Jwts.builder()
-                .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, signatureKey)
-                .compact();
-
-        // TODO:  Encryption
-
-        return new Bearer(bearerToken, username, attributes, groups);
+        return new Bearer(generateEncryptedToken(claims), username, attributes, groups);
 
     }
 
     public Bearer parseBearerToken(String bearerToken) {
 
-        final Jws<Claims> claims = Jwts.parser()
-                .setSigningKey(signatureKey)
-                .parseClaimsJws(bearerToken);
-
-        // Sanity check
-        final String clazz = (String) claims.getBody().get(Keys.CLASS.getName());
-        if (!Bearer.class.getName().equals(clazz)) {
-            // Opportunity for future versioning of the data model...
-            String msg = "Unsuppored Bearer token class:  " + clazz;
-            throw new RuntimeException(msg);
-        }
+        final Jws<Claims> claims = parseEncrypteToken(bearerToken, Bearer.class);
 
         final String username = claims.getBody().getSubject();
 
         final Map<String,List<String>> attributes = new HashMap<>();
         for (Map.Entry<String,Object> y : claims.getBody().entrySet()) {
             final String key = y.getKey();
-            if (Keys.forName(key) != null) {
+            if (Keys.forName(key) != null && AbstractJwtService.Keys.forName(key) != null) {
                 // Skip these;  we handle these differently
                 continue;
             }
