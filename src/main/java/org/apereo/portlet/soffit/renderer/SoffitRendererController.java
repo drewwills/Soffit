@@ -11,9 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.portlet.soffit.Headers;
 import org.apereo.portlet.soffit.model.v1_0.Payload;
+import org.apereo.portlet.soffit.model.v1_0.Preferences;
 import org.apereo.portlet.soffit.model.v1_0.Request;
 import org.apereo.portlet.soffit.model.v1_0.Bearer;
 import org.apereo.portlet.soffit.service.BearerService;
+import org.apereo.portlet.soffit.service.PreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,10 @@ public class SoffitRendererController {
     private Environment environment;
 
     @Autowired
-    private BearerService userDetailsService;
+    private BearerService bearerService;
+
+    @Autowired
+    private PreferencesService preferencesService;
 
     @Value("${soffit.renderer.viewsLocation:/WEB-INF/soffit/}")
     private String viewsLocation;
@@ -115,7 +120,13 @@ public class SoffitRendererController {
     public Bearer getBearer(final HttpServletRequest req) {
         final String authorizationHeader = req.getHeader(Headers.AUTHORIZATION.getName());
         final String bearerToken = authorizationHeader.substring(Headers.BEARER_TOKEN_PREFIX.length());
-        return userDetailsService.parseBearerToken(bearerToken);
+        return bearerService.parseBearerToken(bearerToken);
+    }
+
+    @ModelAttribute("preferences")
+    public Preferences getPreferences(final HttpServletRequest req) {
+        final String preferencesToken = req.getHeader(Headers.PREFERECES.getName());
+        return preferencesService.parsePreferences(preferencesToken);
     }
 
     /*

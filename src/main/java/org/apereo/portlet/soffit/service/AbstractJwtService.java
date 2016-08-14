@@ -22,7 +22,12 @@ package org.apereo.portlet.soffit.service;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.portlet.soffit.ITokenizable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import io.jsonwebtoken.Claims;
@@ -38,54 +43,36 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class AbstractJwtService {
 
     public static final String JWT_ISSUER = "Soffit";
+    public static final String SIGNATURE_KEY_PROPERTY = "org.apereo.portlet.soffit.jwt.signatureKey";
+    public static final String DEFAULT_SIGNATURE_KEY = "CHANGEME";
 
-    protected enum Keys {
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-        /**
-         * Concrete Java class to which the JWT deserializes.
-         */
-        CLASS("class");
-
-        /*
-         * Implementation
-         */
-
-        private final String name;
-
-        private Keys(String name) {
-            this.name = name;
-        }
-
-        public static Keys forName(String name) {
-            Keys rslt = null;  // default
-            for (Keys k : Keys.values()) {
-                if (k.getName().equals(name)) {
-                    rslt = k;
-                }
-            }
-            return rslt;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-    }
-
-    @Value("${org.apereo.portlet.soffit.model.v1_0.BearerService.signatureKey}")
+    @Value("${" + SIGNATURE_KEY_PROPERTY + ":" + DEFAULT_SIGNATURE_KEY + "}")
     private String signatureKey;
 
-    protected Claims createClaims(Class<? extends ITokenizable> clazz, Date expires) {
+    @PostConstruct
+    public void init() {
+        if (StringUtils.isBlank(signatureKey)) {
+            logger.error("The value of required property {} is blank", SIGNATURE_KEY_PROPERTY);
+            throw new IllegalStateException();
+        } else if (DEFAULT_SIGNATURE_KEY.equals(signatureKey)) {
+            logger.warn("Property {} is using the deafult value;  please change it", SIGNATURE_KEY_PROPERTY);
+        }
+    }
+
+    protected Claims createClaims(Class<? extends ITokenizable> clazz, String username, Date expires) {
 
         // Registered claims
         final Claims rslt = Jwts.claims()
                 .setIssuer(JWT_ISSUER)
+                .setSubject(username)
                 .setExpiration(expires)
                 .setIssuedAt(new Date())
                 .setId(UUID.randomUUID().toString());
 
         // Deserialization class
-        rslt.put(Keys.CLASS.getName(), clazz.getName());
+        rslt.put(JwtClaims.CLASS.getName(), clazz.getName());
 
         return rslt;
 
@@ -118,7 +105,7 @@ public class AbstractJwtService {
         }
 
         // Sanity check
-        final String s = (String) rslt.getBody().get(Keys.CLASS.getName());
+        final String s = (String) rslt.getBody().get(JwtClaims.CLASS.getName());
         if (!clazz.getName().equals(s)) {
             // Opportunity for future versioning of the data model... needs work
             String msg = "Token class mismatch;  expected '" + clazz.getName() + "' but was '" + s + "'";

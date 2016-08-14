@@ -20,6 +20,7 @@
 package org.apereo.portlet.soffit.renderer;
 
 import org.apereo.portlet.soffit.service.BearerService;
+import org.apereo.portlet.soffit.service.PreferencesService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,8 +40,13 @@ public class SoffitRendererConfiguration {
     }
 
     @Bean
-    public BearerService userDetailsService() {
+    public BearerService bearerService() {
         return new BearerService();
+    }
+
+    @Bean
+    public PreferencesService preferencesService() {
+        return new PreferencesService();
     }
 
 }

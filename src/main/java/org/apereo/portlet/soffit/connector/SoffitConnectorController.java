@@ -70,7 +70,8 @@ public class SoffitConnectorController implements ApplicationContextAware {
     /**
      * Preferences that begin with this String will not be shared with the remote soffit.
      */
-    /* package-private */ static final String CONNECTOR_PREFERENCE_PREFIX = SoffitConnectorController.class.getName();
+    public static final String CONNECTOR_PREFERENCE_PREFIX = SoffitConnectorController.class.getName();
+
     private static final String SERVICE_URL_PREFERENCE = CONNECTOR_PREFERENCE_PREFIX + ".serviceUrl";
     private static final String PAYLOAD_CLASS_PREFERENCE = CONNECTOR_PREFERENCE_PREFIX + ".payloadClass";
 

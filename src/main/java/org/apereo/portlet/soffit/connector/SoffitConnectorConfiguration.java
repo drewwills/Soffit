@@ -20,6 +20,7 @@
 package org.apereo.portlet.soffit.connector;
 
 import org.apereo.portlet.soffit.service.BearerService;
+import org.apereo.portlet.soffit.service.PreferencesService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,9 +32,33 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SoffitConnectorConfiguration {
 
+    /*
+     * Services
+     *
+     * These beans know how to produce & consume the JWTs that represent the
+     * data model of Soffit.
+     */
+
     @Bean
-    public BearerService userDetailsService() {
+    public BearerService bearerService() {
         return new BearerService();
+    }
+
+    @Bean
+    public PreferencesService preferencesService() {
+        return new PreferencesService();
+    }
+
+    /*
+     * Header Providers
+     *
+     * These beans know how to produce HTTP headers based on JWTs.
+     * (NOTE:  there are more of these in uPortal.)
+     */
+
+    @Bean
+    public PreferencesHeaderProvider preferencesHeaderProvider() {
+        return new PreferencesHeaderProvider();
     }
 
 }

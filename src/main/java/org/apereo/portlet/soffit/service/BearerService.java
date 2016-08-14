@@ -39,45 +39,9 @@ import io.jsonwebtoken.Jws;
 @Service
 public class BearerService extends AbstractJwtService {
 
-    private enum Keys {
-
-        /**
-         * List of group names to which the user belongs.
-         */
-        GROUPS("groups");
-
-        /*
-         * Implementation
-         */
-
-        private final String name;
-
-        private Keys(String name) {
-            this.name = name;
-        }
-
-        public static Keys forName(String name) {
-            Keys rslt = null;  // default
-            for (Keys k : Keys.values()) {
-                if (k.getName().equals(name)) {
-                    rslt = k;
-                }
-            }
-            return rslt;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-    }
-
     public Bearer createBearer(String username, Map<String,List<String>> attributes, List<String> groups, Date expires) {
 
-        final Claims claims = createClaims(Bearer.class, expires);
-
-        // Username
-        claims.setSubject(username);
+        final Claims claims = createClaims(Bearer.class, username, expires);
 
         /*
          * User attributes; attribute names that match registered attributes
@@ -102,7 +66,7 @@ public class BearerService extends AbstractJwtService {
         }
 
         // Groups
-        claims.put(Keys.GROUPS.getName(), groups);
+        claims.put(JwtClaims.GROUPS.getName(), groups);
 
         return new Bearer(generateEncryptedToken(claims), username, attributes, groups);
 
@@ -117,7 +81,7 @@ public class BearerService extends AbstractJwtService {
         final Map<String,List<String>> attributes = new HashMap<>();
         for (Map.Entry<String,Object> y : claims.getBody().entrySet()) {
             final String key = y.getKey();
-            if (Keys.forName(key) != null && AbstractJwtService.Keys.forName(key) != null) {
+            if (JwtClaims.forName(key) != null) {
                 // Skip these;  we handle these differently
                 continue;
             }
@@ -134,9 +98,11 @@ public class BearerService extends AbstractJwtService {
         }
 
         @SuppressWarnings("unchecked")
-        final List<String> groups = (List<String>) claims.getBody().get(Keys.GROUPS.getName());
+        final List<String> groups = (List<String>) claims.getBody().get(JwtClaims.GROUPS.getName());
 
-        return new Bearer(bearerToken, username, attributes, groups);
+        Bearer rslt = new Bearer(bearerToken, username, attributes, groups);
+        logger.debug("Produced the following Bearer for user '{}':  {}", username, rslt);
+        return rslt;
 
     }
 

@@ -59,7 +59,15 @@ public enum Headers {
      *
      * @since 5.0
      */
-    PAYLOAD_CLASS("X-Soffit-PayloadClass");
+    PAYLOAD_CLASS("X-Soffit-PayloadClass"),
+
+    /**
+     * HTTP header sent by the {@link SoffitConnectorController} containing
+     * preferences for the Soffit in the form of an encrypted JWT.
+     *
+     * @since 5.0
+     */
+    PREFERECES("X-Soffit-Preferences");
 
     /**
      * Prepended to the Authorization HTTP header to indicate that the value
