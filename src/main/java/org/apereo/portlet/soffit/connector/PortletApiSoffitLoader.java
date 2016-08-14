@@ -33,7 +33,6 @@ import org.apache.commons.lang3.Validate;
 import org.apereo.portlet.soffit.model.v1_0.Context;
 import org.apereo.portlet.soffit.model.v1_0.Definition;
 import org.apereo.portlet.soffit.model.v1_0.Request;
-import org.apereo.portlet.soffit.model.v1_0.User;
 import org.springframework.stereotype.Component;
 
 /**
@@ -88,13 +87,6 @@ public class PortletApiSoffitLoader extends AbstractSoffitLoader {
         }
 
         soffit.setRequest(request);
-
-        /*
-         * User
-         */
-        final User user = new User()
-                .setUsername(renderRequest.getRemoteUser());
-        soffit.setUser(user);
 
         /*
          * Context

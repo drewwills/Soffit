@@ -27,7 +27,6 @@ package org.apereo.portlet.soffit.model.v1_0;
 public class Payload {
 
     private Request request;
-    private User user;
     private Context context;
     private Definition definition;
 
@@ -37,14 +36,6 @@ public class Payload {
 
     public void setRequest(Request request) {
         this.request = request;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Context getContext() {
@@ -70,7 +61,6 @@ public class Payload {
         result = prime * result + ((context == null) ? 0 : context.hashCode());
         result = prime * result + ((definition == null) ? 0 : definition.hashCode());
         result = prime * result + ((request == null) ? 0 : request.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
         return result;
     }
 
@@ -98,18 +88,7 @@ public class Payload {
                 return false;
         } else if (!request.equals(other.request))
             return false;
-        if (user == null) {
-            if (other.user != null)
-                return false;
-        } else if (!user.equals(other.user))
-            return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Payload [request=" + request + ", user=" + user + ", context=" + context + ", definition=" + definition
-                + "]";
     }
 
 }
