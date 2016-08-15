@@ -19,6 +19,9 @@
 
 package org.apereo.portlet.soffit.connector;
 
+import java.util.Date;
+
+import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 
 import org.slf4j.Logger;
@@ -36,6 +39,18 @@ public abstract class AbstractHeaderProvider implements IHeaderProvider {
         final String rslt = renderRequest.getRemoteUser() != null
                 ? renderRequest.getRemoteUser()
                 : guestUserName;
+        return rslt;
+    }
+
+    /**
+     * Point at which the JWT expires
+     */
+    protected final Date getExpiration(RenderRequest renderRequest) {
+        // Expiration of the JWT
+        final PortletSession portletSession = renderRequest.getPortletSession();
+        final Date rslt = new Date(
+                    portletSession.getLastAccessedTime() + ((long) portletSession.getMaxInactiveInterval() * 1000L)
+                );
         return rslt;
     }
 

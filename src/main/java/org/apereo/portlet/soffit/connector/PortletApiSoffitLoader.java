@@ -31,7 +31,6 @@ import javax.portlet.WindowState;
 
 import org.apache.commons.lang3.Validate;
 import org.apereo.portlet.soffit.model.v1_0.Context;
-import org.apereo.portlet.soffit.model.v1_0.Definition;
 import org.apereo.portlet.soffit.model.v1_0.Request;
 import org.springframework.stereotype.Component;
 
@@ -102,31 +101,6 @@ public class PortletApiSoffitLoader extends AbstractSoffitLoader {
         }
 
         soffit.setContext(context);
-
-        /*
-         * Definition (portlet preferences only)
-         */
-        Definition definition = soffit.getDefinition();
-        if (definition == null) {
-            // Create & set
-            definition = new Definition();
-            soffit.setDefinition(definition);
-        }
-
-        // Preferences
-        for (Map.Entry<String,String[]> y : renderRequest.getPreferences().getMap().entrySet()) {
-            /*
-             * We ignore (skip) preferences that exist for the benefit of the
-             * SoffitConnectorController.
-             */
-            if (y.getKey().startsWith(SoffitConnectorController.CONNECTOR_PREFERENCE_PREFIX)) {
-                continue;
-            }
-            definition.setPreference(
-                    y.getKey(),
-                    Collections.unmodifiableList(Arrays.asList(y.getValue()))
-            );
-        }
     }
 
 }

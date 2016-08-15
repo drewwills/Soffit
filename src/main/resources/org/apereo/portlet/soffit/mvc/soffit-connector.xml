@@ -19,7 +19,10 @@
     <!-- Allows the SoffitConnectorController to benefit from uPortal's PlaceholderConfigurer -->
     <bean parent="primaryPropertyPlaceholderConfigurer" />
 
-    <!-- This is a bit of a mess:  the Java class is a part of uPortal (not Soffit), but it's referenced in this file.  When this tech is moved into the uPortal project, this mismatch will go away. -->
+    <!-- This is a bit of a mess:  these Java classes are a part of uPortal (not Soffit),
+         but are referenced in this file.  When this tech is moved into the uPortal project,
+         this mismatch will go away. -->
     <bean class="org.jasig.portal.soffit.AuthorizationHeaderProvider" />
+    <bean class="org.jasig.portal.soffit.DefinitionHeaderProvider" />
 
 </beans>

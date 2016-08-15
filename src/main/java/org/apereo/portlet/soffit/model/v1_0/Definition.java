@@ -20,11 +20,8 @@
 package org.apereo.portlet.soffit.model.v1_0;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Provides information about the publication record of the soffit within the
@@ -32,91 +29,52 @@ import java.util.Set;
  *
  * @author drewwills
  */
-public class Definition {
+public class Definition extends AbstractTokenizable {
 
-    private String title;
-    private String fname;
-    private String description;
+    private final String title;
+    private final String fname;
+    private final String description;
 
-    private Set<String> categories = new HashSet<>();
-    private Map<String,List<String>> parameters = new HashMap<>();
-    private Map<String,List<String>> preferences = new HashMap<>();
+    private final List<String> categories;
+    private final Map<String,List<String>> parameters;
+
+    public Definition(String encryptedToken, String title, String fname, String description, List<String> categories, Map<String,List<String>> parameters) {
+        super(encryptedToken);
+        this.title = title;
+        this.fname = fname;
+        this.description = description;
+        this.categories = Collections.unmodifiableList(categories);
+        this.parameters = Collections.unmodifiableMap(parameters);
+    }
 
     public String getTitle() {
         return title;
-    }
-
-    public Definition setTitle(String title) {
-        this.title = title;
-        return this;
     }
 
     public String getFname() {
         return fname;
     }
 
-    public Definition setFname(String fname) {
-        this.fname = fname;
-        return this;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public Definition setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public Set<String> getCategories() {
-        // Defensive copy
-        return Collections.unmodifiableSet(categories);
-    }
-
-    public void addCategory(String category) {
-        categories.add(category);
-    }
-
-    public boolean removeCategory(String category) {
-        return categories.remove(category);
+    public List<String> getCategories() {
+        return categories;
     }
 
     public Map<String, List<String>> getParameters() {
-        // Defensive copy
-        return Collections.unmodifiableMap(parameters);
-    }
-
-    public List<String> removeParameter(String key) {
-        return parameters.remove(key);
-    }
-
-    public void setParameter(String key, List<String> values) {
-        parameters.put(key, values);
-    }
-
-    public Map<String, List<String>> getPreferences() {
-        // Defensive copy
-        return Collections.unmodifiableMap(preferences);
-    }
-
-    public List<String> removePreference(String key) {
-        return preferences.remove(key);
-    }
-
-    public void setPreference(String key, List<String> values) {
-        preferences.put(key, values);
+        return parameters;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + ((categories == null) ? 0 : categories.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((fname == null) ? 0 : fname.hashCode());
         result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-        result = prime * result + ((preferences == null) ? 0 : preferences.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         return result;
     }
@@ -125,7 +83,7 @@ public class Definition {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (!super.equals(obj))
             return false;
         if (getClass() != obj.getClass())
             return false;
@@ -150,11 +108,6 @@ public class Definition {
                 return false;
         } else if (!parameters.equals(other.parameters))
             return false;
-        if (preferences == null) {
-            if (other.preferences != null)
-                return false;
-        } else if (!preferences.equals(other.preferences))
-            return false;
         if (title == null) {
             if (other.title != null)
                 return false;
@@ -166,7 +119,7 @@ public class Definition {
     @Override
     public String toString() {
         return "Definition [title=" + title + ", fname=" + fname + ", description=" + description + ", categories="
-                + categories + ", parameters=" + parameters + ", preferences=" + preferences + "]";
+                + categories + ", parameters=" + parameters + ", getEncryptedToken()=" + getEncryptedToken() + "]";
     }
 
 }

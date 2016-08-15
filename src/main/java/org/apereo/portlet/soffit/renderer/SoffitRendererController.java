@@ -14,7 +14,9 @@ import org.apereo.portlet.soffit.model.v1_0.Payload;
 import org.apereo.portlet.soffit.model.v1_0.Preferences;
 import org.apereo.portlet.soffit.model.v1_0.Request;
 import org.apereo.portlet.soffit.model.v1_0.Bearer;
+import org.apereo.portlet.soffit.model.v1_0.Definition;
 import org.apereo.portlet.soffit.service.BearerService;
+import org.apereo.portlet.soffit.service.DefinitionService;
 import org.apereo.portlet.soffit.service.PreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +71,9 @@ public class SoffitRendererController {
 
     @Autowired
     private PreferencesService preferencesService;
+
+    @Autowired
+    private DefinitionService definitionService;
 
     @Value("${soffit.renderer.viewsLocation:/WEB-INF/soffit/}")
     private String viewsLocation;
@@ -127,6 +132,12 @@ public class SoffitRendererController {
     public Preferences getPreferences(final HttpServletRequest req) {
         final String preferencesToken = req.getHeader(Headers.PREFERECES.getName());
         return preferencesService.parsePreferences(preferencesToken);
+    }
+
+    @ModelAttribute("definition")
+    public Definition getDefinition(final HttpServletRequest req) {
+        final String definitionToken = req.getHeader(Headers.DEFINITION.getName());
+        return definitionService.parseDefinition(definitionToken);
     }
 
     /*

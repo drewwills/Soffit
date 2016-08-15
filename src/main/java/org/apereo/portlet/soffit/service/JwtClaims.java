@@ -45,14 +45,45 @@ public enum JwtClaims {
      */
 
     /**
-     * Concrete Java class to which the JWT deserializes.
+     * Concrete Java class to which the JWT deserializes;  used by all data
+     * model objects.
      */
     CLASS("class"),
 
     /**
-     * List of group names to which the user belongs;  used by BearerService.
+     * List of group names to which the user belongs;  used by Bearer objects.
      */
-    GROUPS("groups");
+    GROUPS("groups"),
+
+    /**
+     * Title of the content object configured in the Portlet Manager;  used by
+     * Definition objects.
+     */
+    TITLE("title"),
+
+    /**
+     * FName of the content object configured in the Portlet Manager;  used by
+     * Definition objects.
+     */
+    FNAME("fname"),
+
+    /**
+     * Description of the content object configured in the Portlet Manager;
+     * used by Definition objects.
+     */
+    DESCRIPTION("description"),
+
+    /**
+     * Categories to which the content object belongs, as configured in the
+     * Portlet Manager;  used by Definition objects.
+     */
+    CATEGORIES("categories"),
+
+    /**
+     * Publication parameters of the content object configured in the Portlet
+     * Manager;  used by Definition objects.
+     */
+    PARAMETERS("parameters");
 
     /*
      * Implementation

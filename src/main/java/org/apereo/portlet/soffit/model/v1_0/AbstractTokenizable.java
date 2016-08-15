@@ -39,4 +39,29 @@ public class AbstractTokenizable implements ITokenizable {
         return encryptedToken;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((encryptedToken == null) ? 0 : encryptedToken.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AbstractTokenizable other = (AbstractTokenizable) obj;
+        if (encryptedToken == null) {
+            if (other.encryptedToken != null)
+                return false;
+        } else if (!encryptedToken.equals(other.encryptedToken))
+            return false;
+        return true;
+    }
+
 }

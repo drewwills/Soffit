@@ -20,13 +20,11 @@
 package org.apereo.portlet.soffit.connector;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.portlet.PortletPreferences;
-import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -54,12 +52,6 @@ public class PreferencesHeaderProvider extends AbstractHeaderProvider {
         // Username
         final String username = getUsername(renderRequest);
 
-        // Expiration of the JWT
-        final PortletSession portletSession = renderRequest.getPortletSession();
-        final Date expires = new Date(
-                    portletSession.getLastAccessedTime() + ((long) portletSession.getMaxInactiveInterval() * 1000L)
-                );
-
         // PreferencesMap
         final Map<String,List<String>> preferencesMap = new HashMap<>();
         final PortletPreferences prefs = renderRequest.getPreferences();
@@ -72,7 +64,7 @@ public class PreferencesHeaderProvider extends AbstractHeaderProvider {
         }
 
         // Preferences header
-        final Preferences preferences = preferencesService.createPreferences(preferencesMap, username, expires);
+        final Preferences preferences = preferencesService.createPreferences(preferencesMap, username, getExpiration(renderRequest));
         final Header rslt = new BasicHeader(
                 Headers.PREFERECES.getName(),
                 preferences.getEncryptedToken());

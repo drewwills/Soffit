@@ -20,6 +20,7 @@
 package org.apereo.portlet.soffit.connector;
 
 import org.apereo.portlet.soffit.service.BearerService;
+import org.apereo.portlet.soffit.service.DefinitionService;
 import org.apereo.portlet.soffit.service.PreferencesService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +48,11 @@ public class SoffitConnectorConfiguration {
     @Bean
     public PreferencesService preferencesService() {
         return new PreferencesService();
+    }
+
+    @Bean
+    public DefinitionService definitionService() {
+        return new DefinitionService();
     }
 
     /*
