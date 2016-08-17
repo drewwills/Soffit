@@ -95,7 +95,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
     @Qualifier(value="org.apereo.portlet.soffit.connector.SoffitConnectorController.RESPONSE_CACHE")
     private Cache responseCache;
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
