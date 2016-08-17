@@ -35,6 +35,7 @@ dependencies {
     compile("net.sf.ehcache:ehcache-core:${ehcacheVersion}")
     compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
     compile("org.apache.httpcomponents:httpclient:${httpclientVersion}")
+    compile("org.jasypt:jasypt:${jasyptVersion}")
     compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
     compile group: 'org.springframework', name: 'spring-webmvc-portlet', version: "${springVersion}"

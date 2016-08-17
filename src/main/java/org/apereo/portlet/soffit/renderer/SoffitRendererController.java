@@ -88,7 +88,7 @@ public class SoffitRendererController {
     @RequestMapping(value="/{module}", method=RequestMethod.GET)
     public ModelAndView render(final HttpServletRequest req, final HttpServletResponse res, final @PathVariable String module) {
 
-        logger.debug("Rendering for request URI '{}', soffitJson={}", req.getRequestURI());
+        logger.debug("Rendering for request URI '{}'", req.getRequestURI());
 
         // PortalRequest
         final String portalRequestToken = req.getHeader(Headers.PORTAL_REQUEST.getName());
