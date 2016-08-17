@@ -39,8 +39,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -56,12 +55,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.OrderComparator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping(value={"VIEW","EDIT","HELP"})
@@ -73,12 +69,8 @@ public class SoffitConnectorController implements ApplicationContextAware {
     public static final String CONNECTOR_PREFERENCE_PREFIX = SoffitConnectorController.class.getName();
 
     private static final String SERVICE_URL_PREFERENCE = CONNECTOR_PREFERENCE_PREFIX + ".serviceUrl";
-    private static final String PAYLOAD_CLASS_PREFERENCE = CONNECTOR_PREFERENCE_PREFIX + ".payloadClass";
 
-    private static final String DEFAULT_PAYLOAD_CLASS = org.apereo.portlet.soffit.model.v1_0.Payload.class.getName();
     private static final int TIMEOUT_SECONDS = 10;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${org.apereo.portlet.soffit.connector.SoffitConnectorController.maxConnectionsPerRoute:20}")
     private Integer maxConnectionsPerRoute;
@@ -97,7 +89,6 @@ public class SoffitConnectorController implements ApplicationContextAware {
             .setConnectionManagerShared(true);  // Prevents the client from shutting down the pool
 
     private ApplicationContext applicationContext;
-    private final List<ISoffitLoader> soffitLoaders = new ArrayList<>();
     private List<IHeaderProvider> headerProviders;
 
     @Autowired
@@ -117,10 +108,6 @@ public class SoffitConnectorController implements ApplicationContextAware {
         poolingHttpClientConnectionManager.setDefaultMaxPerRoute(maxConnectionsPerRoute);
         poolingHttpClientConnectionManager.setMaxTotal(maxConnectionsTotal);
         httpClientBuilder.setConnectionManager(poolingHttpClientConnectionManager);
-
-        final Map<String, ISoffitLoader> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ISoffitLoader.class);
-        soffitLoaders.addAll(map.values());
-        Collections.sort(soffitLoaders, new OrderComparator());
 
         final Map<String, IHeaderProvider> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, IHeaderProvider.class);
         final List<IHeaderProvider> values = new ArrayList<>(beans.values());
@@ -144,21 +131,17 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
             logger.debug("No applicable response in cache;  invoking serviceUrl '{}'", serviceUrl);
 
-            final HttpPost postMethod = new HttpPost(serviceUrl);
+            final HttpGet getMethod = new HttpGet(serviceUrl);
             try (final CloseableHttpClient httpClient = httpClientBuilder.build()) {
 
-                // Provide a payload
-                final Object payload = buildPayload(req, res);
-                postMethod.setHeader(Headers.PAYLOAD_CLASS.getName(), payload.getClass().getName());
+                // Send the data model as encrypted JWT HTTP headers
                 for (IHeaderProvider headerProvider : headerProviders) {
                     final Header header = headerProvider.createHeader(req, res);
-                    postMethod.addHeader(header);
+                    getMethod.addHeader(header);
                 }
-                final String json = objectMapper.writeValueAsString(payload);
-                postMethod.setEntity(new StringEntity(json));
 
                 // Send the request
-                final HttpResponse httpResponse = httpClient.execute(postMethod);
+                final HttpResponse httpResponse = httpClient.execute(getMethod);
                 final int statusCode = httpResponse.getStatusLine().getStatusCode();
                 logger.debug("HTTP response code for url '{}' was '{}'", serviceUrl, statusCode);
 
@@ -179,7 +162,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
         }
 
         if (responseValue != null) {
-            // Whenther by cache or by fresh HTTP request, we have a response we can show...
+            // Whether by cache or by fresh HTTP request, we have a response we can show...
             try {
                 res.getPortletOutputStream().write(responseValue.getBytes());
             } catch (IOException e) {
@@ -271,23 +254,6 @@ public class SoffitConnectorController implements ApplicationContextAware {
         }
 
         return rslt;
-
-    }
-
-    private Object buildPayload(final RenderRequest req, final RenderResponse res) {
-
-        try {
-            final String payloadClassName = req.getPreferences().getValue(PAYLOAD_CLASS_PREFERENCE, DEFAULT_PAYLOAD_CLASS);
-            Class<?> payloadClass = Class.forName(payloadClassName);
-            final Object rslt = payloadClass.newInstance();
-            for (ISoffitLoader loader : soffitLoaders) {
-                loader.load(rslt, req, res);
-            }
-            return rslt;
-        } catch (Exception e) {
-            final String msg = "Failed to load the soffit payload";
-            throw new RuntimeException(msg, e);
-        }
 
     }
 

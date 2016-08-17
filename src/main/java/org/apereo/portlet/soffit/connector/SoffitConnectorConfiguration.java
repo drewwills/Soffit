@@ -21,6 +21,7 @@ package org.apereo.portlet.soffit.connector;
 
 import org.apereo.portlet.soffit.service.BearerService;
 import org.apereo.portlet.soffit.service.DefinitionService;
+import org.apereo.portlet.soffit.service.PortalRequestService;
 import org.apereo.portlet.soffit.service.PreferencesService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +47,11 @@ public class SoffitConnectorConfiguration {
     }
 
     @Bean
+    public PortalRequestService portalRequestService() {
+        return new PortalRequestService();
+    }
+
+    @Bean
     public PreferencesService preferencesService() {
         return new PreferencesService();
     }
@@ -61,6 +67,11 @@ public class SoffitConnectorConfiguration {
      * These beans know how to produce HTTP headers based on JWTs.
      * (NOTE:  there are more of these in uPortal.)
      */
+
+    @Bean
+    public PortalRequestHeaderProvider portalRequestHeaderProvider() {
+        return new PortalRequestHeaderProvider();
+    }
 
     @Bean
     public PreferencesHeaderProvider preferencesHeaderProvider() {

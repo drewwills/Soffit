@@ -21,6 +21,7 @@ package org.apereo.portlet.soffit.renderer;
 
 import org.apereo.portlet.soffit.service.BearerService;
 import org.apereo.portlet.soffit.service.DefinitionService;
+import org.apereo.portlet.soffit.service.PortalRequestService;
 import org.apereo.portlet.soffit.service.PreferencesService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,11 @@ public class SoffitRendererConfiguration {
     @Bean
     public BearerService bearerService() {
         return new BearerService();
+    }
+
+    @Bean
+    public PortalRequestService portalRequestService() {
+        return new PortalRequestService();
     }
 
     @Bean

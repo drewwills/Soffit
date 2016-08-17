@@ -1,7 +1,7 @@
 package org.apereo.portlet.soffit.renderer;
 
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,13 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.portlet.soffit.Headers;
-import org.apereo.portlet.soffit.model.v1_0.Payload;
 import org.apereo.portlet.soffit.model.v1_0.Preferences;
-import org.apereo.portlet.soffit.model.v1_0.Request;
+import org.apereo.portlet.soffit.model.v1_0.PortalRequest;
+import org.apereo.portlet.soffit.model.v1_0.PortalRequest.Attributes;
 import org.apereo.portlet.soffit.model.v1_0.Bearer;
 import org.apereo.portlet.soffit.model.v1_0.Definition;
 import org.apereo.portlet.soffit.service.BearerService;
 import org.apereo.portlet.soffit.service.DefinitionService;
+import org.apereo.portlet.soffit.service.PortalRequestService;
 import org.apereo.portlet.soffit.service.PreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +27,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/soffit")
@@ -61,10 +59,16 @@ public class SoffitRendererController {
      */
     public static final String CACHE_MAXAGE_PROPERTY_FORMAT = PROPERTY_PREFIX + "%s.cache.max-age";
 
-    private static final String MODEL_NAME = "soffit";
+    private static final String PORTAL_REQUEST_MODEL_NAME = "portalRequest";
+
+    private static final String DEFAULT_MODE = "view";
+    private static final String DEFAULT_WINDOW_STATE = "normal";
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private PortalRequestService portalRequestService;
 
     @Autowired
     private BearerService bearerService;
@@ -79,45 +83,24 @@ public class SoffitRendererController {
     private String viewsLocation;
     private final Map<ViewTuple,String> availableViews = new HashMap<>();
 
-    final ObjectMapper objectMapper = new ObjectMapper();
-
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @RequestMapping(value="/{module}", method=RequestMethod.POST)
-    public ModelAndView render(final HttpServletRequest req, final HttpServletResponse res,
-            final @PathVariable String module, final @RequestBody String soffitJson) {
+    @RequestMapping(value="/{module}", method=RequestMethod.GET)
+    public ModelAndView render(final HttpServletRequest req, final HttpServletResponse res, final @PathVariable String module) {
 
-        logger.debug("Rendering for request URI '{}', soffitJson={}", req.getRequestURI(), soffitJson);
+        logger.debug("Rendering for request URI '{}', soffitJson={}", req.getRequestURI());
 
-        String payloadClassName = null;
-        try {
+        // PortalRequest
+        final String portalRequestToken = req.getHeader(Headers.PORTAL_REQUEST.getName());
+        final PortalRequest portalRequest = portalRequestService.parsePortalRequest(portalRequestToken);
 
-            payloadClassName = req.getHeader(Headers.PAYLOAD_CLASS.getName());
-            if (payloadClassName == null) {
-                final String msg = "HTTP Header '" + Headers.PAYLOAD_CLASS.getName() + "' not specified";
-                throw new IllegalArgumentException(msg);
-            }
-            final Class<?> payloadClass = Class.forName(payloadClassName);
-            logger.debug("Selected payloadClass '{}' for request URI '{}'", payloadClass, req.getRequestURI());
+        // Select a view
+        final String viewName = selectView(req, module, portalRequest);
 
-            // Deserialize the payload
-            final Object soffit = objectMapper.readValue(soffitJson, payloadClass);
+        // Set up cache headers appropriately
+        configureCacheHeaders(res, module);
 
-            // Select a view
-            final String viewName = selectView(req, module, soffit);
-
-            // Set up cache headers appropriately
-            configureCacheHeaders(res, module);
-
-            return new ModelAndView(viewName.toString(), MODEL_NAME, soffit);
-
-        } catch (IOException e) {
-            final String msg = "Request body was not JSON or was not a valid SoffitRequest";
-            throw new IllegalArgumentException(msg, e);
-        } catch (ClassNotFoundException e) {
-            final String msg = "Unable to locate the specified PayloadClass:  " + payloadClassName;
-            throw new IllegalArgumentException(msg, e);
-        }
+        return new ModelAndView(viewName.toString(), PORTAL_REQUEST_MODEL_NAME, portalRequest);
 
     }
 
@@ -164,14 +147,7 @@ public class SoffitRendererController {
 
     }
 
-    private String selectView(final HttpServletRequest req, final String module, final Object payload) {
-
-        /*
-         * NOTE: In the future, when we actually have more than one possible
-         * payloadClass, we will need to do better than simply hard-casting the
-         * payload to the type we need.
-         */
-        final Payload soffit = (Payload) payload;
+    private String selectView(final HttpServletRequest req, final String module, final PortalRequest portalRequest) {
 
         final StringBuilder modulePathBuilder = new StringBuilder().append(viewsLocation);
         if (!viewsLocation.endsWith("/")) {
@@ -187,8 +163,13 @@ public class SoffitRendererController {
         final Set<String> moduleResources = req.getSession().getServletContext().getResourcePaths(modulePath);
 
         // Need to make a selection based on 3 things:  module (above), mode, & windowState
-        final String modeLowercase = soffit.getRequest().getAttributes().get(Request.MODE).get(0).toLowerCase();
-        final String windowStateLowercase = soffit.getRequest().getWindowState().toLowerCase();
+        final Map<String,List<String>> requestAttributes = portalRequest.getAttributes();
+        final String modeLowercase = !requestAttributes.get(Attributes.MODE.getName()).isEmpty()
+                ? requestAttributes.get(Attributes.MODE.getName()).get(0).toLowerCase()
+                : DEFAULT_MODE;
+        final String windowStateLowercase = !requestAttributes.get(Attributes.WINDOW_STATE.getName()).isEmpty()
+                ? requestAttributes.get(Attributes.WINDOW_STATE.getName()).get(0).toLowerCase()
+                : DEFAULT_WINDOW_STATE;
 
         final ViewTuple viewTuple = new ViewTuple(modulePath, modeLowercase, windowStateLowercase);
         String rslt = availableViews.get(viewTuple);
@@ -211,13 +192,13 @@ public class SoffitRendererController {
                     rslt = pathBasedOnModeOnly;
                 } else {
                     throw new IllegalStateException("Unable to select a view for PortletMode="
-                            + modeLowercase + " and WindowState=" + soffit.getRequest().getWindowState());
+                            + modeLowercase + " and WindowState=" + windowStateLowercase);
                 }
             }
         }
 
         logger.info("Selected viewName='{}' for PortletMode='{}' and WindowState='{}'",
-                                rslt, modeLowercase, soffit.getRequest().getWindowState());
+                                rslt, modeLowercase, windowStateLowercase);
 
         return rslt;
 

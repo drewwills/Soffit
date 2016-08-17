@@ -56,6 +56,23 @@ public enum JwtClaims {
     GROUPS("groups"),
 
     /**
+     * List of group names to which the user belongs;  used by Bearer objects.
+     */
+    PROPERTIES("properties"),
+
+    /**
+     * List of group names to which the user belongs;  used by Bearer objects.
+     */
+    ATTRIBUTES("attributes"),
+
+    /**
+     * Used both by by Definition objects (publication parameters of the content
+     * object configured in the Portlet Manager) and by PortalRequest objects
+     * (request parameters).
+     */
+    PARAMETERS("parameters"),
+
+    /**
      * Title of the content object configured in the Portlet Manager;  used by
      * Definition objects.
      */
@@ -77,13 +94,7 @@ public enum JwtClaims {
      * Categories to which the content object belongs, as configured in the
      * Portlet Manager;  used by Definition objects.
      */
-    CATEGORIES("categories"),
-
-    /**
-     * Publication parameters of the content object configured in the Portlet
-     * Manager;  used by Definition objects.
-     */
-    PARAMETERS("parameters");
+    CATEGORIES("categories");
 
     /*
      * Implementation

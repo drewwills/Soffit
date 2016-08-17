@@ -57,6 +57,15 @@ public class PreferencesHeaderProvider extends AbstractHeaderProvider {
         final PortletPreferences prefs = renderRequest.getPreferences();
         for (Map.Entry<String,String[]> y : prefs.getMap().entrySet()) {
             final String name = y.getKey();
+
+            /*
+             * We ignore (skip) preferences that exist for the benefit of the
+             * SoffitConnectorController.
+             */
+            if (name.startsWith(SoffitConnectorController.CONNECTOR_PREFERENCE_PREFIX)) {
+                continue;
+            }
+
             List<String> values = Arrays.asList(prefs.getValues(name, new String[0]));
             if (!values.isEmpty()) {
                 preferencesMap.put(name, values);

@@ -21,6 +21,11 @@ package org.apereo.portlet.soffit;
 
 import org.apereo.portlet.soffit.connector.SoffitConnectorController;
 
+/**
+ * Set of HTTP headers, both standard and custom, in use within Soffit.
+ *
+ * @author drewwills
+ */
 public enum Headers {
 
     /*
@@ -51,15 +56,12 @@ public enum Headers {
      */
 
     /**
-     * HTTP header sent by the {@link SoffitConnectorController} to
-     * signal which POJO the JSON payload my be deserialized into.  This is a
-     * strategy for versioning and backwards compatibility.  The receiver of an
-     * older payload is free to transform it to a newer one, if a newer one is
-     * available (and that's the tactic we'll likely emply when it comes to it).
+     * HTTP header sent by the {@link SoffitConnectorController} containing
+     * the {@link PortalRequest} for the Soffit in the form of an encrypted JWT.
      *
      * @since 5.0
      */
-    PAYLOAD_CLASS("X-Soffit-PayloadClass"),  // TODO:  Remove!
+    PORTAL_REQUEST("X-Soffit-PortalRequest"),
 
     /**
      * HTTP header sent by the {@link SoffitConnectorController} containing

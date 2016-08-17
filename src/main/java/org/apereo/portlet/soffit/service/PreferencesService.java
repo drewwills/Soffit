@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apereo.portlet.soffit.connector.SoffitConnectorController;
 import org.apereo.portlet.soffit.model.v1_0.Preferences;
 import org.springframework.stereotype.Service;
 
@@ -45,14 +44,6 @@ public class PreferencesService extends AbstractJwtService {
 
         // PreferencesMap
         for (Map.Entry<String,List<String>> y : preferencesMap.entrySet()) {
-            /*
-             * We ignore (skip) preferences that exist for the benefit of the
-             * SoffitConnectorController.
-             */
-            if (y.getKey().startsWith(SoffitConnectorController.CONNECTOR_PREFERENCE_PREFIX)) {
-                continue;
-            }
-
             claims.put(y.getKey(), y.getValue());
         }
 
