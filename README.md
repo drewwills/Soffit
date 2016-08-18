@@ -47,13 +47,13 @@ A soffit's interaction with the portal is HTTP-based.  It is posible to write a 
     * Gradle Project (recommended)
     * Packaging=*War* (recommended)
     * Dependencies=*Cache* (recommended) & *Web* (required)
-    * Additional dependencies you intend to use
+    * Additional dependencies you intend to use (optional -- you can add them later)
 1. Add Soffit as a dependency to your project (see below)
 1. Add the `tomcat-embed-jasper` dependency to your project (see below)
 1. Add the `@SoffitApplication` annotation to your application class (the one annotated with `@SpringBootApplication`)
 1. Create the directory path `src/main/webapp/WEB-INF/soffit/`
 1. Choose a name for your soffit and create a directory with that name inside `/soffit/` (above);  recommended:  use only lowercase letters and dashes ('-') in the name
-1. Create a `view.jsp` file inside the directory named for your soffit;  add your markup (e.g. `<h2>Hello World!</h2>`)
+1. Create a `view.jsp` file inside the directory named for your soffit;  add your markup (_e.g._ `<h2>Hello World!</h2>`)
 1. In `src/main/resources/application.properties`, define the `server.port` property and set it to an unused port (like 8090)
 1. Run the command `$gradle assemble` to build your application
 1. Run the command `$java -jar build/lib/{filename}.war` to start your application
@@ -87,6 +87,8 @@ configurations {
     providedRuntime
 }
 
+[...]
+
 providedRuntime('org.apache.tomcat.embed:tomcat-embed-jasper')
 ```
 
@@ -100,7 +102,7 @@ Follow these steps to view your soffit in uPortal.
 * Choose _Portlet_ in the list of types and click _Continue_
 * Select _/uPortal_ and _Soffit Connector_ in the Summary Information screen and click _Continue_ (assumes you have Soffit installed in your portal)
 * Enter portlet metadata normally (_e.g._ name, tile, fname, groups, categories, lifecycle state, _etc._)
-* Under Portlet Preferences, override the value of `org.apereo.portlet.soffit.connector.SoffitConnectorController.serviceUrl` with the URL of your soffit, _e.g._ `http://localhost:8090/soffit/my-soffit` running independently (outside Tomcat) or `http://localhost:8080/my-porject/soffit/my-soffit` running inside Tomcat
+* Under Portlet Preferences, override the value of `org.apereo.portal.soffit.connector.SoffitConnectorController.serviceUrl` with the URL of your soffit, _e.g._ `http://localhost:8090/soffit/my-soffit` running independently (outside Tomcat) or `http://localhost:8080/my-porject/soffit/my-soffit` running inside Tomcat
 * Click _Save_
 
 ## Modern Web User Interfaces
