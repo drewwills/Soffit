@@ -4,12 +4,20 @@ description = 'Apereo Soffit'
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'checkstyle'
 
 defaultTasks 'clean', 'build'
 
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+checkstyle {
+    // Stay on checkstyle version 6 until Java version 7 support can be dropped
+    toolVersion = '6.19'
+    showViolations = true
+    configFile = file("${project.rootDir}/checkstyle.xml")
 }
 
 configurations {
@@ -24,6 +32,11 @@ configurations {
      * that works both from the command line and in Buildship.
      */
     compile.extendsFrom provided
+
+    /*
+     * Configure checkstyle
+     */
+    checkstyle
 }
 
 dependencies {
