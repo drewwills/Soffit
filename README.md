@@ -109,10 +109,10 @@ Follow these steps to view your soffit in uPortal.
 
 To be of any use, real soffits must go beyond _Hello World!_  Soffit provides a rich data model for sharing data from the portal with your application.  There are (currently) four objects in this data model:
 
-* The [`Bearer`](https://github.com/drewwills/Soffit/blob/master/src/main/java/org/apereo/portal/soffit/model/v1_0/Bearer.java) contains information about the user:  _username_, _user attributes_, and _group affiliations_ in the portal
-* The [`PortalRequest`](https://github.com/drewwills/Soffit/blob/master/src/main/java/org/apereo/portal/soffit/model/v1_0/PortalRequest.java) contains information about the request your soffit is filling, like _parameters_, _mode_, and _window state_
-* The [`Preferences`](https://github.com/drewwills/Soffit/blob/master/src/main/java/org/apereo/portal/soffit/model/v1_0/Preferences.java) object contains a collection of publish-time settings for your soffit chosen by the administrator;  these are options you define for your needs;  using preferences is optional
-* The [`Definition`](https://github.com/drewwills/Soffit/blob/master/src/main/java/org/apereo/portal/soffit/model/v1_0/Definition.java) contains publish-time metadata about your soffit in the portal;  these are settings defined by and consumed by the portal itself, like _title_ and _chrome style_
+* The [`Bearer`](src/main/java/org/apereo/portal/soffit/model/v1_0/Bearer.java) contains information about the user:  _username_, _user attributes_, and _group affiliations_ in the portal
+* The [`PortalRequest`](src/main/java/org/apereo/portal/soffit/model/v1_0/PortalRequest.java) contains information about the request your soffit is filling, like _parameters_, _mode_, and _window state_
+* The [`Preferences`](src/main/java/org/apereo/portal/soffit/model/v1_0/Preferences.java) object contains a collection of publish-time settings for your soffit chosen by the administrator;  these are options you define for your needs;  using preferences is optional
+* The [`Definition`](src/main/java/org/apereo/portal/soffit/model/v1_0/Definition.java) contains publish-time metadata about your soffit in the portal;  these are settings defined by and consumed by the portal itself, like _title_ and _chrome style_
 
 ### Accessing th data model in a JSP
 
