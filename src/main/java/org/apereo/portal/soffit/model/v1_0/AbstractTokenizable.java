@@ -49,18 +49,23 @@ public class AbstractTokenizable implements ITokenizable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         AbstractTokenizable other = (AbstractTokenizable) obj;
         if (encryptedToken == null) {
-            if (other.encryptedToken != null)
+            if (other.encryptedToken != null) {
                 return false;
-        } else if (!encryptedToken.equals(other.encryptedToken))
+            }
+        } else if (!encryptedToken.equals(other.encryptedToken)) {
             return false;
+        }
         return true;
     }
 

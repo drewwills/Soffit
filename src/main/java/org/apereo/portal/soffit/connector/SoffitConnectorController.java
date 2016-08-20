@@ -304,35 +304,47 @@ public class SoffitConnectorController implements ApplicationContextAware {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             CacheTuple other = (CacheTuple) obj;
             if (mode == null) {
-                if (other.mode != null)
+                if (other.mode != null) {
                     return false;
-            } else if (!mode.equals(other.mode))
+                }
+            } else if (!mode.equals(other.mode)) {
                 return false;
-            if (publicScope != other.publicScope)
+            }
+            if (publicScope != other.publicScope) {
                 return false;
+            }
             if (serviceUrl == null) {
-                if (other.serviceUrl != null)
+                if (other.serviceUrl != null) {
                     return false;
-            } else if (!serviceUrl.equals(other.serviceUrl))
+                }
+            } else if (!serviceUrl.equals(other.serviceUrl)) {
                 return false;
+            }
             if (username == null) {
-                if (other.username != null)
+                if (other.username != null) {
                     return false;
-            } else if (!username.equals(other.username))
+                }
+            } else if (!username.equals(other.username)) {
                 return false;
+            }
             if (windowState == null) {
-                if (other.windowState != null)
+                if (other.windowState != null) {
                     return false;
-            } else if (!windowState.equals(other.windowState))
+                }
+            } else if (!windowState.equals(other.windowState)) {
                 return false;
+            }
             return true;
         }
 

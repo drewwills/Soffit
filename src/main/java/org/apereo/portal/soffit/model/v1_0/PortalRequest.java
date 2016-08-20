@@ -162,28 +162,37 @@ public class PortalRequest extends AbstractTokenizable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         PortalRequest other = (PortalRequest) obj;
         if (attributes == null) {
-            if (other.attributes != null)
+            if (other.attributes != null) {
                 return false;
-        } else if (!attributes.equals(other.attributes))
+            }
+        } else if (!attributes.equals(other.attributes)) {
             return false;
+        }
         if (parameters == null) {
-            if (other.parameters != null)
+            if (other.parameters != null) {
                 return false;
-        } else if (!parameters.equals(other.parameters))
+            }
+        } else if (!parameters.equals(other.parameters)) {
             return false;
+        }
         if (properties == null) {
-            if (other.properties != null)
+            if (other.properties != null) {
                 return false;
-        } else if (!properties.equals(other.properties))
+            }
+        } else if (!properties.equals(other.properties)) {
             return false;
+        }
         return true;
     }
 

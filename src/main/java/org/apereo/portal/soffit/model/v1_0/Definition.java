@@ -81,38 +81,51 @@ public class Definition extends AbstractTokenizable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Definition other = (Definition) obj;
         if (categories == null) {
-            if (other.categories != null)
+            if (other.categories != null) {
                 return false;
-        } else if (!categories.equals(other.categories))
+            }
+        } else if (!categories.equals(other.categories)) {
             return false;
+        }
         if (description == null) {
-            if (other.description != null)
+            if (other.description != null) {
                 return false;
-        } else if (!description.equals(other.description))
+            }
+        } else if (!description.equals(other.description)) {
             return false;
+        }
         if (fname == null) {
-            if (other.fname != null)
+            if (other.fname != null) {
                 return false;
-        } else if (!fname.equals(other.fname))
+            }
+        } else if (!fname.equals(other.fname)) {
             return false;
+        }
         if (parameters == null) {
-            if (other.parameters != null)
+            if (other.parameters != null) {
                 return false;
-        } else if (!parameters.equals(other.parameters))
+            }
+        } else if (!parameters.equals(other.parameters)) {
             return false;
+        }
         if (title == null) {
-            if (other.title != null)
+            if (other.title != null) {
                 return false;
-        } else if (!title.equals(other.title))
+            }
+        } else if (!title.equals(other.title)) {
             return false;
+        }
         return true;
     }
 

@@ -252,28 +252,37 @@ public class SoffitRendererController {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             ViewTuple other = (ViewTuple) obj;
             if (mode == null) {
-                if (other.mode != null)
+                if (other.mode != null) {
                     return false;
-            } else if (!mode.equals(other.mode))
+                }
+            } else if (!mode.equals(other.mode)) {
                 return false;
+            }
             if (moduleName == null) {
-                if (other.moduleName != null)
+                if (other.moduleName != null) {
                     return false;
-            } else if (!moduleName.equals(other.moduleName))
+                }
+            } else if (!moduleName.equals(other.moduleName)) {
                 return false;
+            }
             if (windowState == null) {
-                if (other.windowState != null)
+                if (other.windowState != null) {
                     return false;
-            } else if (!windowState.equals(other.windowState))
+                }
+            } else if (!windowState.equals(other.windowState)) {
                 return false;
+            }
             return true;
         }
 

@@ -56,18 +56,23 @@ public class Preferences extends AbstractTokenizable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Preferences other = (Preferences) obj;
         if (preferencesMap == null) {
-            if (other.preferencesMap != null)
+            if (other.preferencesMap != null) {
                 return false;
-        } else if (!preferencesMap.equals(other.preferencesMap))
+            }
+        } else if (!preferencesMap.equals(other.preferencesMap)) {
             return false;
+        }
         return true;
     }
 
