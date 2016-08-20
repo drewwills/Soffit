@@ -26,6 +26,7 @@
 
     <!-- Document public interfaces well, i.e. all non-trivial public and protected functions should include Javadoc that indicates what it does. -->
     <module name="JavadocMethod">
+      <property name="severity" value="${optionalSeverity}"/>
       <property name="scope" value="protected"/>
     </module>
 
