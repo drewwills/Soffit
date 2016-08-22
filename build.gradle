@@ -28,19 +28,19 @@ configurations {
 
 dependencies {
 
-    compile ("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
-    compile("commons-io:commons-io:${commonsIoVersion}")
-    compile("io.jsonwebtoken:jjwt:${jjwtVersion}")
-    compile("javax.servlet:jstl:${jstlVersion}")
-    compile("net.sf.ehcache:ehcache-core:${ehcacheVersion}")
-    compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
-    compile("org.apache.httpcomponents:httpclient:${httpclientVersion}")
-    compile("org.jasypt:jasypt:${jasyptVersion}")
-    compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
-    compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
-    compile group: 'org.springframework', name: 'spring-webmvc-portlet', version: "${springVersion}"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind',      version: '2.7.4'
+    compile group: 'commons-io',                 name: 'commons-io',            version: '2.5'
+    compile group: 'io.jsonwebtoken',            name: 'jjwt',                  version: '0.6.0'
+    compile group: 'javax.servlet',              name: 'jstl',                  version: '1.2'
+    compile group: 'net.sf.ehcache',             name: 'ehcache-core',          version: '2.6.8'
+    compile group: 'org.apache.commons',         name: 'commons-lang3',         version: '3.4'
+    compile group: 'org.apache.httpcomponents',  name: 'httpclient',            version: '4.5.2'
+    compile group: 'org.jasypt',                 name: 'jasypt',                version: '1.9.2'
+    compile group: 'org.slf4j',                  name: 'slf4j-api',             version: '1.7.21'
+    compile group: 'org.springframework',        name: 'spring-web',            version: '3.2.9.RELEASE'
+    compile group: 'org.springframework',        name: 'spring-webmvc-portlet', version: '3.2.9.RELEASE'
 
-    provided group: 'javax.servlet', name: 'servlet-api', version: "${servletVersion}"
+    provided group: 'javax.servlet',      name: 'servlet-api',            version: '2.5'
     provided group: 'org.apache.portals', name: 'portlet-api_2.1.0_spec', version: '1.0'
 
 }
