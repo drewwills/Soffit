@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * Collection of preferences for this Soffit and their values.  Preferences are
  * typically defined by administrators at publish time.
@@ -73,7 +75,10 @@ public class Preferences extends AbstractTokenizable {
 
     @Override
     public String toString() {
-        return "Preferences [preferencesMap=" + preferencesMap + ", getEncryptedToken()=" + getEncryptedToken() + "]";
+        return new ToStringBuilder(this).
+            append("preferencesMap", this.preferencesMap).
+            append("getEncryptedToken()", this.getEncryptedToken()).
+            toString();
     }
 
 }

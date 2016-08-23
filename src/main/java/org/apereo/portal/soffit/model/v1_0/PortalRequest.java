@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * Provides some information about the user's request to which the portal will
  * respond using output from the soffit.  This information is organized into
@@ -189,8 +191,12 @@ public class PortalRequest extends AbstractTokenizable {
 
     @Override
     public String toString() {
-        return "PortalRequest [properties=" + properties + ", attributes=" + attributes + ", parameters=" + parameters
-                + ", getEncryptedToken()=" + getEncryptedToken() + "]";
+        return new ToStringBuilder(this).
+            append("properties", this.properties).
+            append("attributes", this.attributes).
+            append("parameters", this.parameters).
+            append("getEncryptedToken()", this.getEncryptedToken()).
+            toString();
     }
 
 }

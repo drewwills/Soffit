@@ -19,6 +19,8 @@
 
 package org.apereo.portal.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -92,8 +94,12 @@ public class Bearer extends AbstractTokenizable {
 
     @Override
     public String toString() {
-        return "Bearer [username=" + username + ", attributes=" + attributes + ", groups=" + groups
-                + ", getEncryptedToken()=" + getEncryptedToken() + "]";
+        return new ToStringBuilder(this).
+            append("username", username).
+            append("attributes", attributes).
+            append("groups", groups).
+            append("getEncryptedToken()", this.getEncryptedToken()).
+            toString();
     }
 
 }
