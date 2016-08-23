@@ -19,6 +19,8 @@
 
 package org.apereo.portal.soffit.model.v1_0;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -118,8 +120,14 @@ public class Definition extends AbstractTokenizable {
 
     @Override
     public String toString() {
-        return "Definition [title=" + title + ", fname=" + fname + ", description=" + description + ", categories="
-                + categories + ", parameters=" + parameters + ", getEncryptedToken()=" + getEncryptedToken() + "]";
+        return new ToStringBuilder(this).
+            append("title", this.title).
+            append("fname", this.fname).
+            append("description", this.description).
+            append("categories", this.categories).
+            append("parameters", this.parameters).
+            append("getEncryptedToken()", this.getEncryptedToken()).
+            toString();
     }
 
 }
