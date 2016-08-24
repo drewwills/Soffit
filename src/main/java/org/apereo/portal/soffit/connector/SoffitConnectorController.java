@@ -225,7 +225,13 @@ public class SoffitConnectorController implements ApplicationContextAware {
             final String cacheControlValue = cacheControlHeader.getValue();
             logger.debug("Soffit with serviceUrl='{}' specified cache-control header value='{}'",
                                                                 serviceUrl, cacheControlValue);
-            if (!cacheControlValue.equals(SoffitRendererController.CACHE_CONTROL_NOCACHE)) {
+            if (cacheControlValue.equals(
+                SoffitRendererController.CACHE_CONTROL_NOSTORE)) {
+              logger.trace("Not caching response because no-store CacheControl directive.");
+            } else if (cacheControlValue.equals(
+                SoffitRendererController.CACHE_CONTROL_NOCACHE)) {
+              logger.info("Treating a no-cache directive (which would allow caching so long as cached responses are validated with the back-end at future use) as a no-store directive because do not yet support cache re-validation.");
+            } else { // neither no-cache nor no-store 
                 CacheTuple cacheTuple = null;
                 // TODO:  Need to find a polished utility that parses a cache-control header, or write one
                 final String[] tokens = cacheControlValue.split(",");

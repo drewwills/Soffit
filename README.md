@@ -140,6 +140,20 @@ Cache-Control: public, max-age=300
 
 Cache scope may be `public` (shared by all users) or `private` (cached per-user).  Specify `max-age` in seconds.
 
+Cache re-validation is not yet supported, so
+
+```
+Cache-Control: no-store
+```
+
+and
+
+```
+Cache-Control: no-cache
+```
+
+currently have the same effect.
+
 ## Sample Applications
 
 There are several sample applications in [this repo](https://github.com/drewwills/soffit-samples).

@@ -43,6 +43,11 @@ public class SoffitRendererController {
      * specified).
      */
     public static final String CACHE_CONTROL_NOCACHE = "no-cache";
+    
+    /**
+     * Indicates the response should not be cached.
+     */
+    public static final String CACHE_CONTROL_NOSTORE = "no-store";
 
     /**
      * Prefix for all custom properties.
@@ -142,6 +147,8 @@ public class SoffitRendererController {
                 ? cacheScopeValue + ", max-age=" + cacheMaxAgeValue
                 : CACHE_CONTROL_NOCACHE;
         logger.debug("Setting cache-control='{}' for module '{}'", cacheControl, module);
+        
+        // TODO: support setting CacheControl no-store
 
         res.setHeader(Headers.CACHE_CONTROL.getName(), cacheControl);
 
