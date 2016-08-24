@@ -211,6 +211,7 @@ public class SoffitConnectorController implements ApplicationContextAware {
     private ResponseWrapper extractResponseAndCacheIfAppropriate(final HttpResponse httpResponse,
             final RenderRequest req, final String serviceUrl) {
 
+        // Extract
         final HttpEntity entity = httpResponse.getEntity();
         ResponseWrapper rslt;
         try {
@@ -225,38 +226,52 @@ public class SoffitConnectorController implements ApplicationContextAware {
             final String cacheControlValue = cacheControlHeader.getValue();
             logger.debug("Soffit with serviceUrl='{}' specified cache-control header value='{}'",
                                                                 serviceUrl, cacheControlValue);
-            if (cacheControlValue.equals(
-                SoffitRendererController.CACHE_CONTROL_NOSTORE)) {
-              logger.trace("Not caching response because no-store CacheControl directive.");
-            } else if (cacheControlValue.equals(
-                SoffitRendererController.CACHE_CONTROL_NOCACHE)) {
-              logger.info("Treating a no-cache directive (which would allow caching so long as cached responses are validated with the back-end at future use) as a no-store directive because do not yet support cache re-validation.");
-            } else { // neither no-cache nor no-store 
-                CacheTuple cacheTuple = null;
-                // TODO:  Need to find a polished utility that parses a cache-control header, or write one
-                final String[] tokens = cacheControlValue.split(",");
-                // At present, we expect all valid values to be either 'no-cache' or in the form 'public, max-age=300'
-                if (tokens.length == 2) {
-                    final String maxAge = tokens[1].trim().substring("max-age=".length());
-                    int timeToLive = Integer.parseInt(maxAge);
-                    if ("private".equals(tokens[0].trim())) {
-                        cacheTuple = new CacheTuple(serviceUrl, req.getPortletMode().toString(),
-                                req.getWindowState().toString(), req.getRemoteUser());
-                    } else if ("public".equals(tokens[0].trim())) {
-                        cacheTuple = new CacheTuple(serviceUrl, req.getPortletMode().toString(),
-                                req.getWindowState().toString());
-                    }
-                    logger.debug("Produced cacheTuple='{}' for cacheControlValue='{}'", cacheTuple, cacheControlValue);
-                    if (cacheTuple != null) {
-                        final Element element = new Element(cacheTuple, rslt);
-                        element.setTimeToLive(timeToLive);
-                        responseCache.put(element);
-                    } else {
-                        logger.warn("The remote soffit specified cacheControlValue='{}', "
-                                + "but SoffitConnectorController failed to generate a cacheTuple");
-                    }
+            if (cacheControlHeader != null) {
+                switch (cacheControlValue) {
+                    case SoffitRendererController.CACHE_CONTROL_NOCACHE:
+                        /*
+                         * This value means we can use validation caching based on
+                         * Last-Modified or ETag.  Those things aren't implemented
+                         * yet, so fall through to the handling for 'no-store'.
+                         */
+                    case SoffitRendererController.CACHE_CONTROL_NOSTORE:
+                        /*
+                         * The value 'no-store' is the default.
+                         */
+                        logger.debug("Not caching response due to CacheControl directive of '{}'", cacheControlValue);
+                        break;
+                    default:
+                        /*
+                         * Looks like we're using the expiration cache feature.
+                         */
+                        CacheTuple cacheTuple = null;
+                        // TODO:  Need to find a polished utility that parses a cache-control header, or write one
+                        final String[] tokens = cacheControlValue.split(",");
+                        // At present, we expect all valid values to be in the form '[public|private], max-age=300'
+                        if (tokens.length == 2) {
+                            final String maxAge = tokens[1].trim().substring("max-age=".length());
+                            int timeToLive = Integer.parseInt(maxAge);
+                            if ("private".equals(tokens[0].trim())) {
+                                cacheTuple = new CacheTuple(serviceUrl, req.getPortletMode().toString(),
+                                        req.getWindowState().toString(), req.getRemoteUser());
+                            } else if ("public".equals(tokens[0].trim())) {
+                                cacheTuple = new CacheTuple(serviceUrl, req.getPortletMode().toString(),
+                                        req.getWindowState().toString());
+                            }
+                            logger.debug("Produced cacheTuple='{}' for cacheControlValue='{}'", cacheTuple, cacheControlValue);
+                            if (cacheTuple != null) {
+                                final Element element = new Element(cacheTuple, rslt);
+                                element.setTimeToLive(timeToLive);
+                                responseCache.put(element);
+                            } else {
+                                logger.warn("The remote soffit specified cacheControlValue='{}', "
+                                        + "but SoffitConnectorController failed to generate a cacheTuple");
+                            }
+                        }
+                        break;
                 }
             }
+
         }
 
         return rslt;

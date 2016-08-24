@@ -36,18 +36,18 @@ import org.springframework.web.servlet.ModelAndView;
 public class SoffitRendererController {
 
     /**
-     * The default value for the <code>Cache-Control</code> header is "no-cache,"
-     * which indicates the response should not be cached (until we later
-     * implement ETag-based caching).  This header value will be sent if the
-     * Soffit does not specify a value for scope or max-age  (they both must be
-     * specified).
-     */
-    public static final String CACHE_CONTROL_NOCACHE = "no-cache";
-    
-    /**
-     * Indicates the response should not be cached.
+     * The default value for the <code>Cache-Control</code> header is "no-store,"
+     * which indicates the response should never be cached.  Currently, this
+     * header value will be sent if the Soffit does not specify a value for
+     * <strong>both</strong> scope or max-age.
      */
     public static final String CACHE_CONTROL_NOSTORE = "no-store";
+
+    /**
+     * Indicates the response may be cached with validation caching based on
+     * Last-Modified or ETag.  These features are not currently implemented.
+     */
+    public static final String CACHE_CONTROL_NOCACHE = "no-cache";
 
     /**
      * Prefix for all custom properties.
@@ -145,10 +145,10 @@ public class SoffitRendererController {
         // Both must be specified, else we just use the default...
         final String cacheControl = (StringUtils.isNotEmpty(cacheScopeValue) && StringUtils.isNotEmpty(cacheMaxAgeValue))
                 ? cacheScopeValue + ", max-age=" + cacheMaxAgeValue
-                : CACHE_CONTROL_NOCACHE;
+                : CACHE_CONTROL_NOSTORE;
         logger.debug("Setting cache-control='{}' for module '{}'", cacheControl, module);
-        
-        // TODO: support setting CacheControl no-store
+
+        // TODO: support validation caching
 
         res.setHeader(Headers.CACHE_CONTROL.getName(), cacheControl);
 
