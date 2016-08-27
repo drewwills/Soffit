@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE module PUBLIC
+      "-//Puppy Crawl//DTD Check Configuration 1.1//EN"
+      "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
+<!-- Created from https://wiki.jasig.org/display/UPM40/Code+Style+and+Conventions -->
+<module name="Checker">
+  <!--
+    The default severity to rules is "error".
+    If false positives are being flagged, individual module severity can be
+    loosened by adding the following to the module configruation:
+
+    <property name="severity" value="${optionalSeverity}"/>
+  -->
+  <property name="severity" value="error"/>
+
+  <!-- Never use tabs! -->
+  <module name="FileTabCharacter"/>
+
+  <!-- Always use UTF-8. -->
+  <property name="charset" value="UTF-8"/>
+
+  <module name="TreeWalker">
+    <!-- Always add the current ASF license header in all versioned files. -->
+    <module name="Regexp">
+      <property name="format" value="\A/\*\*\n \* Licensed to Apereo under one or more contributor license\n \* agreements\. See the NOTICE file distributed with this work\n \* for additional information regarding copyright ownership\.\n \* Apereo licenses this file to you under the Apache License,\n \* Version 2\.0 \(the &quot;License&quot;\); you may not use this file\n \* except in compliance with the License\.  You may obtain a\n \* copy of the License at the following location:\n \*\n \*   http://www\.apache\.org/licenses/LICENSE-2\.0\n \*\n \* Unless required by applicable law or agreed to in writing,\n \* software distributed under the License is distributed on an\n \* &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n \* KIND, either express or implied\.  See the License for the\n \* specific language governing permissions and limitations\n \* under the License\.\n \*/"/>
+      <property name="message" value="ASF license header not found"/>
+    </module>
+
+    <!-- Remove all trailing whitespaces. -->
+    <module name="Regexp">
+      <property name="format" value="[ \t]+$"/>
+      <property name="illegalPattern" value="true"/>
+      <property name="message" value="Trailing whitespace"/>
+    </module>
+
+    <!-- Always use 4 space indents and never use tabs! -->
+    <module name="Indentation"/>
+
+    <!-- Constants (i.e. static final members) values should always be in upper case. -->
+    <module name="ConstantName"/>
+
+    <!-- Prefer using final modifier on all member variables and arguments. -->
+    <module name="FinalLocalVariable"/>
+
+    <!--
+      Document public interfaces well, i.e. all non-trivial public and protected
+      functions should include Javadoc that indicates what it does.
+    -->
+    <module name="JavadocMethod">
+      <property name="severity" value="${optionalSeverity}"/>
+      <property name="scope" value="protected"/>
+    </module>
+
+    <!--
+      The following order should be used for imports:
+
+      import static
+      blank
+      import java.*
+      blank
+      import javax.*
+      blank
+      import all others
+    -->
+    <module name="CustomImportOrder">
+      <property name="standardPackageRegExp" value="^java\."/>
+      <property name="specialImportsRegExp" value="^javax\."/>
+      <property name="customImportOrderRules" value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
+    </module>
+
+    <!--
+      Do not use the keywords if, while, do, for, or switch without braces
+      indicating the block of code that goes along with the keyword.
+    -->
+    <module name="NeedBraces"/>
+
+    <!--
+      Putting one statement on each line also makes using an debugger much easier
+      as you can inspect the value of each variable before it is used in the next statement.
+    -->
+    <module name="OneStatementPerLine"/>
+  </module>
+</module>
