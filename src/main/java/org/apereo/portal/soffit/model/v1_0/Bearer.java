@@ -67,28 +67,37 @@ public class Bearer extends AbstractTokenizable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Bearer other = (Bearer) obj;
         if (attributes == null) {
-            if (other.attributes != null)
+            if (other.attributes != null) {
                 return false;
-        } else if (!attributes.equals(other.attributes))
+            }
+        } else if (!attributes.equals(other.attributes)) {
             return false;
+        }
         if (groups == null) {
-            if (other.groups != null)
+            if (other.groups != null) {
                 return false;
-        } else if (!groups.equals(other.groups))
+            }
+        } else if (!groups.equals(other.groups)) {
             return false;
+        }
         if (username == null) {
-            if (other.username != null)
+            if (other.username != null) {
                 return false;
-        } else if (!username.equals(other.username))
+            }
+        } else if (!username.equals(other.username)) {
             return false;
+        }
         return true;
     }
 

@@ -4,12 +4,21 @@ description = 'Apereo Soffit'
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'checkstyle'
 
 defaultTasks 'clean', 'build'
 
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+checkstyle {
+    showViolations = true
+    configFile = file("${project.rootDir}/checkstyle.xml")
+    // optional severity will show on local system report as info
+    // and will not appear on continuous integration output
+    configProperties.optionalSeverity = System.getenv("CI") ? 'ignore' : 'info'
 }
 
 configurations {
@@ -24,6 +33,11 @@ configurations {
      * that works both from the command line and in Buildship.
      */
     compile.extendsFrom provided
+
+    /*
+     * Configure checkstyle
+     */
+    checkstyle
 }
 
 dependencies {
